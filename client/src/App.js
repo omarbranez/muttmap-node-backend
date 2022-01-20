@@ -12,8 +12,7 @@ function App() {
     .then(res=> res.json())
     .then(data => setData(data.message))
     .catch(err => console.log(err))
-    }
-  , [])
+  }, [])
   const callBackendAPI = async () => {
     const response = await fetch('/express_backend')
     const body = await response.json()
@@ -23,6 +22,7 @@ function App() {
     }
     return body
   }
+  // console.log(data.message)
 
   // console.log(data)
   return (

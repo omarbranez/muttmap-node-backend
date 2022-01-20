@@ -6,8 +6,11 @@ function App() {
   
   const [data, setData] = useState(null)
   useEffect(()=>{
-    callBackendAPI()
-    .then(res => setData({ data: res.express }))
+    // callBackendAPI()
+    fetch("/api")
+    // .then(res => setData({ data: res.express }))
+    .then(res=> res.json())
+    .then(data => setData(data.message))
     .catch(err => console.log(err))
     }
   , [])
@@ -29,7 +32,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        {data ? <p>{data.data}</p> : <p>Loading</p>}
+        {data ? <p>{data}</p> : <p>Loading</p>}
         <a
           className="App-link"
           href="https://reactjs.org"

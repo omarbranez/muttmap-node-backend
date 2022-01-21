@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/omarbranez/muttmap-node-backend#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.2",
+    "mongoose": "^6.1.7"
   },
   "engines": {
     "node": "17.3.0"

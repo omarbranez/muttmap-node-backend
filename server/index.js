@@ -1,6 +1,7 @@
 // server/index.js
 const path = require("path")
 const express = require("express");
+const uri = process.env.MONGODB_URI
 
 const PORT = process.env.PORT || 3001;
 

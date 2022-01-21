@@ -7,6 +7,10 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
+
+const db = mongoose.connection 
+
 app.use(express.static(path.resolve(__dirname, '../client/build')))
 
 app.get("/api", (req, res) => {
@@ -20,3 +24,5 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
+
+db.on('error', console.error.bind(console, "Database connection failed"))

@@ -1,5 +1,5 @@
 // server/index.js
-const path = require('path')
+const path = require("path")
 const express = require("express");
 
 const PORT = process.env.PORT || 3001;
@@ -13,11 +13,9 @@ app.get("/api", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client/build", "index.html"))
+    res.semdFile(path.resolve(__dirname, '../client/build', 'index.html'))
 })
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
-
-
-

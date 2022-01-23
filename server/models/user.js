@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema(
         reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction'}],
         comments: [{ type: mongoose.Schema.Types.OnjectId, ref: 'Comment'}]
     },
-    { timestamps: true },
 )
 
 userSchema.methods.comparePassword = function(password) {

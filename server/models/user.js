@@ -12,9 +12,9 @@ const userSchema = new mongoose.Schema(
         hash_password: {
             type: String
         },
-        reports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Report'},
+        reports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Report'}],
         reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction'}],
-        comments: [{ type: mongoose.Schema.Types.OnjectId, ref: 'Comment'}]
+        comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}]
     },
 )
 

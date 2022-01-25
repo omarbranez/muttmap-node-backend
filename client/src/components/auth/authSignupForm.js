@@ -28,7 +28,7 @@ const AuthSignupForm = ({createUser}) => {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
 
-    // const url = `https://www.bing.com/api/maps/mapcontrol?key=${process.env.REACT_APP_M_API_KEY}` // does this do anything
+    const url = `https://www.bing.com/api/maps/mapcontrol?key=${process.env.REACT_APP_M_API_KEY}` // does this do anything
 
     const handleSubmit = (e) => {
         e.preventDefault()

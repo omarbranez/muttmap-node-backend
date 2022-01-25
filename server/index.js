@@ -1,11 +1,13 @@
 // server/index.js
 const path = require("path")
-const express = require("express");
+const express = require("express")
+const mongoose = require("mongoose")
+require('dotenv').config()
 const uri = process.env.MONGODB_URI
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001
 
-const app = express();
+const app = express()
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
@@ -14,15 +16,15 @@ const db = mongoose.connection
 app.use(express.static(path.resolve(__dirname, '../client/build')))
 
 app.get("/api", (req, res) => {
-  res.json({ message: "Hello from server!" });
-});
+  res.json({ message: "Hello from server!" })
+})
 
 app.get("*", (req, res) => {
     res.semdFile(path.resolve(__dirname, '../client/build', 'index.html'))
 })
 
 app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+  console.log(`Server listening on ${PORT}`)
+})
 
 db.on('error', console.error.bind(console, "Database connection failed"))

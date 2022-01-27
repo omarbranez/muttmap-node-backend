@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { createUser, getLatLngOutput } from '../../actions/userActions'
 
+import loadBing from '../../util/script'
+
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -18,7 +20,36 @@ import InputLabel from '@mui/material/InputLabel'
 import Tooltip from '@mui/material/Tooltip'
 
 const AuthSignupForm = ({createUser}) => {
-    // useScript(`https://www.bing.com/api/maps/mapcontrol?key=${process.env.REACT_APP_M_API_KEY}`) // does this do anything
+
+    const [scriptLoaded, setScriptLoaded ] = useState(false)
+    
+    const loadAutosuggest = () => {
+        window.Microsoft.Maps.Module.loadModule('Microsoft.Maps.Autosuggest', {
+            callback: ()=>{
+                let manager = new window.Microsoft.Maps.AutosuggestManager({
+                    maxResults: 5 
+                })
+                manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion)
+            },
+            errorCallback: console.log("error")
+        })
+        setScriptLoaded(true)
+     }
+
+    
+    useEffect(()=>{
+         loadBing(loadAutosuggest())
+     }, [])
+
+    useEffect(() => window.Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', { callback: onLoad}),[])
+
+        
+    const onLoad = () => { 
+        const options = { maxResults: 5 };
+        const manager = new window.Microsoft.Maps.AutosuggestManager(options);
+        manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
+    }
+
     const [latLngOutput, setLatLngOutput] = useState({lat: null, lng: null})
     const [username, setUsername] = useState('')
     const [values, setValues] = useState({
@@ -28,26 +59,8 @@ const AuthSignupForm = ({createUser}) => {
     })
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
-    // const useScript = url => {
-        useEffect(()=>{
-            const script = document.createElement("script")
-            script.src = process.env.REACT_APP_B_SITE_KEY
-            script.type = "text/javascript"
-            script.async = true
-            document.body.appendChild(script)
-            console.log(script.src)
-            window.Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', {callback: onLoad})
-            // const onLoad = () => {
-             const options = { maxResults: 5 };
-                 const manager = new window.Microsoft.Maps.AutosuggestManager(options)
-                 manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion)
-            // }
-            return () => {
-                document.body.removeChild(script)
-            }
-        }, [])
-    // }
-    
+
+
     const handleSubmit = (e) => {
         e.preventDefault()
         values.password === values.passwordConfirmation ? createUser({ username: username, password: values.password, lat: latLngOutput.lat, lng: latLngOutput.lng}, navigate) : alert("Passwords do not match")
@@ -64,33 +77,13 @@ const AuthSignupForm = ({createUser}) => {
         e.preventDefault()
     }
     
-    // window.Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', { // how to make sure it doesnt error out before it actually
-    //  callback: onLoad,
-    //  errorCallback: onError
-    // })
-    const onLoad = () => { // 
-        console.log(!!Maps)
-        // if (Maps){
-            const options = { maxResults: 5 };
-            const manager = new window.Microsoft.Maps.AutosuggestManager(options);
-            manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
-        // }
-        // else {
-        //  console.log("lol")
-        // }
-    }
-    
-    const onError = (message) => {
-     document.getElementById('printoutPanel').innerHTML = message;
-    }
-    
     function selectedSuggestion(suggestionResult) {
         setLatLngOutput({lat: suggestionResult.location.latitude, lng: suggestionResult.location.longitude})
     }
       
     return (
         <div>
-        {/* {values.password == '' ?  */}
+        { scriptLoaded ? 
         <Box
         component="form"
         sx={{'& > :not(style)': { m: 1, width: '25ch' },}}
@@ -158,22 +151,14 @@ const AuthSignupForm = ({createUser}) => {
                 />
     </FormControl>
         <br/>
+        <div id='searchBoxContainer'><input type='text' id= 'searchBox'/></div>
+        <br/>
         <Button variant="contained" onClick={handleSubmit}>Sign Up</Button>
         <Link to={'/login'}>
             <p>Already registered? <Button variant="contained">Log In</Button></p>
         </Link>
     </Box>
-            {/* <form onSubmit={handleSubmit}>
-             <label>Username:</label><br/>
-             <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required/><br/>
-             <label>Password</label><br/>
-             <input type="password" name="password" value={values.password} onChange={(e) => setPassword(e.target.value)} required/><br/>
-                
-             <label>Set Location</label><br/>
-             <div id='searchBoxContainer'><input type='text' id= 'searchBox'/></div>
-             <input type="submit" value="Sign Up" />
-            </form> */}
-        {/* : <h2>Loading</h2>} */}
+        : <h2>Loading</h2>}
         </div>
     )
 }

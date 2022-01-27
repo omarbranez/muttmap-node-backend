@@ -20,9 +20,27 @@ import AuthLogoutSuccess from './components/auth/authLogoutSuccess'
 import MapWithDrawer from './containers/MapWithDrawer'
 
 const App = ({autoLoginUser}) => {
-  
+  // const [scriptLoaded, setScriptLoaded ] = useState(false)
   useEffect(() => localStorage.token && autoLoginUser(), [autoLoginUser])
 
+  // useEffect(() => {
+  //   const mapLoaded = () => {
+  //     console.log("maploaded called")
+  //   }
+  //     const script = document.createElement('script')
+  //     script.setAttribute("type", "text/javascript")
+  //     script.src = `${process.env.REACT_APP_B_SITE_KEY}?callback=mapLoaded`
+  //     script.async = true
+  //     script.defer = true
+  //     // script.addEventListener('load', mapLoaded)
+  //   // window.Microsoft.Maps && setScriptLoaded(true)
+  //     document.body.appendChild(script)
+  // }, [])
+  //   // }, [scriptLoaded])
+
+  // const mapLoaded = () => {
+  //   console.log("maploaded called")
+  // }
   return (
     <div className="App">
       <Navbar />

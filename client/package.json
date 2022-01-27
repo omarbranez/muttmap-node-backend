@@ -5,6 +5,7 @@
   "proxy": "http://localhost:3001",
   "dependencies": {
     "@azure/cognitiveservices-computervision": "^8.1.0",
+    "@azure/ms-rest-js": "^2.6.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@googlemaps/markerclusterer": "^1.0.21",
@@ -14,6 +15,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "bingmaps-react": "^1.2.10",
     "dotenv": "^14.3.0",
     "google-map-react": "^2.1.10",
     "react": "^17.0.2",

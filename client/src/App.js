@@ -47,7 +47,7 @@ const App = ({autoLoginUser}) => {
 const mapStateToProps = (state) => {
   return {user: state.user}
 }
-export default connect(mapStateToProps, {getReports, setGeolocatedCenter, autoLoginUser, logoutUser })(App);
+export default connect(mapStateToProps, {getReports, setGeolocatedCenter, autoLoginUser, logoutUser })(App)
 // import {useState, useEffect} from 'react'
 // import logo from './logo.svg';
 // import './App.css';

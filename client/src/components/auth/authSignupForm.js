@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { createUser, getLatLngOutput } from '../../actions/userActions'
 
-import loadBing from '../../util/script'
-
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -21,34 +19,11 @@ import Tooltip from '@mui/material/Tooltip'
 
 const AuthSignupForm = ({createUser}) => {
 
-    const [scriptLoaded, setScriptLoaded ] = useState(false)
-    
-    const loadAutosuggest = () => {
-        window.Microsoft.Maps.Module.loadModule('Microsoft.Maps.Autosuggest', {
-            callback: ()=>{
-                let manager = new window.Microsoft.Maps.AutosuggestManager({
-                    maxResults: 5 
-                })
-                manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion)
-            },
-            errorCallback: console.log("error")
-        })
-        setScriptLoaded(true)
-     }
-
-    
     useEffect(()=>{
-         loadBing(loadAutosuggest())
-     }, [])
-
-    useEffect(() => window.Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', { callback: onLoad}),[])
-
-        
-    const onLoad = () => { 
-        const options = { maxResults: 5 };
-        const manager = new window.Microsoft.Maps.AutosuggestManager(options);
+        var options = { maxResults: 5 };
+        var manager = new Microsoft.Maps.AutosuggestManager(options);
         manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
-    }
+    }, [])
 
     const [latLngOutput, setLatLngOutput] = useState({lat: null, lng: null})
     const [username, setUsername] = useState('')
@@ -83,7 +58,7 @@ const AuthSignupForm = ({createUser}) => {
       
     return (
         <div>
-        { scriptLoaded ? 
+        {/* { scriptLoaded ?  */}
         <Box
         component="form"
         sx={{'& > :not(style)': { m: 1, width: '25ch' },}}
@@ -124,41 +99,51 @@ const AuthSignupForm = ({createUser}) => {
                     }
                 label="Password"
             />
-            <br/>
-            <OutlinedInput
-                    id="outlined-adornment-password"
-                    // label="Password"
-                    type={values.showPassword ? 'text' : 'passwordConfirmation'}
-                    value={values.passwordConfirmation}
-                    onChange={(e) => setValues({passwordConfirmation: e.target.value})}
-                    endAdornment={
-                        <InputAdornment position="end">
-                        <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
-                        <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            onMouseEnter={()=>setOpen(true)}
-                            onMouseLeave={()=>setOpen(false)}
-                            edge="end"
-                        >
-                        {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                        </Tooltip>
-                        </InputAdornment>
-                    }
-                label="Confirm Password"
-                />
-    </FormControl>
+        </FormControl>
         <br/>
-        <div id='searchBoxContainer'><input type='text' id= 'searchBox'/></div>
+        <FormControl>
+            <InputLabel>Confirm Password</InputLabel>
+            <OutlinedInput
+                id="outlined-adornment-password-confirmation"
+                    // label="Password"
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.passwordConfirmation}
+                onChange={(e) => setValues({passwordConfirmation: e.target.value})}
+                endAdornment={
+                    <InputAdornment position="end">
+                        <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                onMouseEnter={()=>setOpen(true)}
+                                onMouseLeave={()=>setOpen(false)}
+                                edge="end"
+                            >
+                            {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </Tooltip>
+                    </InputAdornment>
+                }
+                label="Confirm"
+                />
+        </FormControl>
+        <br/>
+        <br/>
+        <div id="searchBoxContainer" style={{margin: '0 auto', boxSizing: 'content-box'}} >
+            <TextField
+                id="searchBox"
+                label="Location"
+            />
+            {/* // <div id='searchBoxContainer'><input type='text' id= 'searchBox'/></div> */}
+        </div>
         <br/>
         <Button variant="contained" onClick={handleSubmit}>Sign Up</Button>
         <Link to={'/login'}>
             <p>Already registered? <Button variant="contained">Log In</Button></p>
         </Link>
     </Box>
-        : <h2>Loading</h2>}
+        {/* : <h2>Loading</h2>} */}
         </div>
     )
 }

@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "build": "cd client && npm install && npm run build"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -19,12 +18,18 @@
   },
   "homepage": "https://github.com/omarbranez/muttmap-node-backend#readme",
   "dependencies": {
-    "bcrypt": "^5.0.1",
-    "dotenv": "^14.3.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
     "express": "^4.17.2",
-    "mongoose": "^6.1.8"
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.0",
+    "morgan": "^1.10.0",
+    "validator": "^13.7.0"
   },
-  "engines": {
-    "node": "17.3.0"
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "nodemon": "^2.0.15"
   }
 }

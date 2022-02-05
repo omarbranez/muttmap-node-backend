@@ -1,7 +1,7 @@
 
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || null,
-    token: JSON.parse(localStorage.getItem('token')) || '',
+    token: JSON.parse(localStorage.getItem('token')),
     location: JSON.parse(localStorage.getItem('location')) || '',
     defaultCenter: {
         lat: null,
@@ -22,17 +22,19 @@ const userReducer = (state=initialState, action) => {
                 lat: action.payload.lat,
                 lng: action.payload.lng,
             }}
+        // case "SET_USER":
+        //     // console.log(action.payload.lat)
+        //     return {...state, ...action.payload,
+        //     defaultCenter: {
+        //         lat: action.payload.lat,
+        //         lng: action.payload.lng
+        //     },
+        //     currentCenter: {
+        //         lat: action.payload.lat,
+        //         lng: action.payload.lng,
+        //     }}
         case "SET_USER":
-            // console.log(action.payload.lat)
-            return {...state, ...action.payload,
-            defaultCenter: {
-                lat: action.payload.lat,
-                lng: action.payload.lng
-            },
-            currentCenter: {
-                lat: action.payload.lat,
-                lng: action.payload.lng,
-            }}
+            return {...state, user: action.payload.user, token: action.payload.token, location: action.payload.location }
         case "SET_DEFAULT_CENTER":
             return {
                 ...state,
@@ -48,7 +50,7 @@ const userReducer = (state=initialState, action) => {
         case "FINISHED_GEOLOCATING":
             return {...state, geolocating: false}
         case "LOGOUT":
-            return {initialState}
+            return {...initialState, user: null, token: null, location: ''}
         default:
             return {...state}
     }

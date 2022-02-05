@@ -22,17 +22,6 @@ const userReducer = (state=initialState, action) => {
                 lat: action.payload.lat,
                 lng: action.payload.lng,
             }}
-        // case "SET_USER":
-        //     // console.log(action.payload.lat)
-        //     return {...state, ...action.payload,
-        //     defaultCenter: {
-        //         lat: action.payload.lat,
-        //         lng: action.payload.lng
-        //     },
-        //     currentCenter: {
-        //         lat: action.payload.lat,
-        //         lng: action.payload.lng,
-        //     }}
         case "SET_USER":
             return {...state, user: action.payload.user, token: action.payload.token, location: action.payload.location }
         case "SET_DEFAULT_CENTER":

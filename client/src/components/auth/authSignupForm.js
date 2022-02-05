@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { connect, useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router'
 import { useNavigate, Link } from 'react-router-dom'
 import { authUser, getLatLngOutput } from '../../actions/userActions'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton'
 
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -18,16 +17,10 @@ import InputLabel from '@mui/material/InputLabel'
 import Tooltip from '@mui/material/Tooltip'
 
 const AuthSignupForm = ({authUser}) => {
-
+    
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
-    useEffect(()=>{
-        var options = { maxResults: 5 };
-        var manager = new Microsoft.Maps.AutosuggestManager(options);
-        manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
-    }, [])
-
+    const [open, setOpen] = useState(false)
     const [values, setValues] = useState({
         username: '',
         password: '',
@@ -36,8 +29,32 @@ const AuthSignupForm = ({authUser}) => {
         lng: null,
         showPassword: false
     })
+    
+    const makeAutosuggestBox = useCallback(() => {
+        const { Maps } = window.Microsoft
+        Maps.loadModule('Microsoft.Maps.AutoSuggest', function(){
+        const options = { maxResults: 5 }
+        const manager = new Maps.AutosuggestManager(options)
+        manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion)
+        })
+    }, [])
 
-    const [open, setOpen] = useState(false)
+    useEffect(() => {
+        if (window.Microsoft && window.Microsoft.Maps) {
+          makeAutosuggestBox()
+        } else {
+          const scriptTag = document.createElement("script")
+          scriptTag.setAttribute("type", "text/javascript")
+          scriptTag.setAttribute(
+            "src",
+            `https://www.bing.com/api/maps/mapcontrol?key=${process.env.REACT_APP_M_API_KEY}&callback=makeMap`
+          )
+          scriptTag.async = true
+          scriptTag.defer = true
+          document.body.appendChild(scriptTag)
+          window.makeAutosuggestBox = makeAutosuggestBox
+        }
+      }, [makeAutosuggestBox])
 
     const handleChange = (e) => {
         setValues({...values, [e.target.name]: e.target.value})
@@ -65,7 +82,6 @@ const AuthSignupForm = ({authUser}) => {
       
     return (
         <div>
-        {/* { scriptLoaded ?  */}
         <Box
         component="form"
         sx={{'& > :not(style)': { m: 1, width: '25ch' },}}
@@ -146,17 +162,21 @@ const AuthSignupForm = ({authUser}) => {
                 id="searchBox"
                 label="Location"
             />
-            {/* // <div id='searchBoxContainer'><input type='text' id= 'searchBox'/></div> */}
         </div>
         <br/>
         <Button variant="contained" onClick={handleSubmit}>Sign Up</Button>
         <Link to={'/login'}>
             <p>Already registered? <Button variant="contained">Log In</Button></p>
         </Link>
+        {/* <Geocoder 
+            mapboxApiAccessToken={process.env.REACT_APP_MB_API_KEY}
+
+        /> */}
     </Box>
         {/* : <h2>Loading</h2>} */}
         </div>
     )
 }
 
+// })
 export default connect(null, { authUser, getLatLngOutput})(AuthSignupForm)

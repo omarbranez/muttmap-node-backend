@@ -133,7 +133,7 @@ const Navbar = (props) => {
                         >
                             <img src={muttmapIconClosed} width="40" alt="muttmapIconClosed" ></img>
                         </IconButton>
-                            <img src={muttmapText} height="45" style={{display: 'block', marginLeft: 'auto', marginRight: '500'}}></img> 
+                            <img src={muttmapText} height="45" style={{display: 'block', marginLeft: 'auto', marginRight: '500'}} alt="muttmap logo"></img> 
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -152,20 +152,20 @@ const Navbar = (props) => {
             {/* this is covered by the app bar */}
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}> 
-            <img src={muttmapIconOpen} width="50" ></img>
+            <img src={muttmapIconOpen} width="50" alt="hidden open drawericon" ></img>
           </IconButton>
         </DrawerHeader>
           {/* this is covered by the app bar */}
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}> 
-            <img src={muttmapIconOpen} width="50" ></img>
+            <img src={muttmapIconOpen} width="50" alt="open drawer icon" ></img>
           </IconButton>
         </DrawerHeader>
         <Divider />
         {user.username ? 
         <List>
             {linkRoutesAndIcons.map((route) => (
-            <Link to={route.path}>
+            <Link to={route.path} key={route.path}>
                 <ListItem button key={route.text} onClick={handleDrawerClose}>
                     <ListItemIcon>
                         {route.icon}
@@ -178,7 +178,7 @@ const Navbar = (props) => {
         :
         <List>
             {loggedOutRoutesAndIcons.map((route) => (
-            <Link to={route.path}>
+            <Link to={route.path} key={route.path}>
                 <ListItem button key={route.text} onClick={handleDrawerClose}>
                     <ListItemIcon>
                         {route.icon}

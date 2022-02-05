@@ -1,7 +1,8 @@
 
 const initialState = {
-    id: null,
-    username: '',
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    token: JSON.parse(localStorage.getItem('token')) || '',
+    location: JSON.parse(localStorage.getItem('location')) || '',
     defaultCenter: {
         lat: null,
         lng: null

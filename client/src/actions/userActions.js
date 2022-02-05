@@ -1,3 +1,4 @@
+import axios from 'axios'
 
 const BASE_URL = "http://localhost:3000/"
 
@@ -11,21 +12,36 @@ export const getLatLngOutput = (lat, lng) => ({
     payload: {lat, lng}
 })
 
-export const createUser = (formData, navigate) => {
-    console.log(formData)
-    return dispatch => {
-        (fetch(BASE_URL + "/users", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData),
-        }))
-        .then(res => handleUserResponse(res, dispatch))
-        .then(navigate('/login/success', {replace: true}))
-    }
-}
+// export const createUser = (formData, navigate) => {
+//     console.log(formData)
+//     return dispatch => {
+//         (fetch(BASE_URL + "/users", {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(formData),
+//         }))
+//         .then(res => handleUserResponse(res, dispatch))
+//         .then(navigate('/login/success', {replace: true}))
+//     }
+// }
 
+export const createUser = async({ formData }) => {
+  console.log(formData)
+  try {
+    const { data } = await axios.post(`/api/v1/auth/register`, formData)
+    const { user, token, location } = data
+    dispatch({
+      type: SET_USER,
+      payload: { user, token, location, alertText }
+    })
+    addUserToLocalStorage({ user, token, location })
+  } catch (error) {
+      console.log(error)
+  }
+}
+  
 export const loginUser = (formData, navigate) => {
     return dispatch => fetch(BASE_URL + "/sessions", {
         method: 'POST',
@@ -47,12 +63,29 @@ export const autoLoginUser = () => {
     .then(res => handleUserResponse(res, dispatch))
   }
 
-export const logoutUser = (navigate) => {
-    return dispatch => {
-        localStorage.clear("token")
-        dispatch({type: "LOGOUT"})
-        navigate('/welcome', {replace: true})
-    }
+// export const logoutUser = (navigate) => {
+//     return dispatch => {
+//         localStorage.clear("token")
+//         dispatch({type: "LOGOUT"})
+//         navigate('/welcome', {replace: true})
+//     }
+// }
+
+export const logoutUser = () => {
+  dispatch({type: "LOGOUT" })
+  removeUserFromLocalStorage()
+}
+
+const addUserToLocalStorage = ({ user, token, location }) => {
+  localStorage.setItem('user', JSON.stringify(user))
+  localStorage.setItem('token', token)
+  localStorage.setItem('location', location)
+}
+
+const removeUserFromLocalStorage = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  localStorage.removeItem('location')
 }
 
 const handleUserResponse = (res, dispatch) => {

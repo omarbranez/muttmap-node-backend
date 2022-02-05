@@ -1,5 +1,5 @@
 import User from '../models/User.js'
-import { StatusCode } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, UnauthenticatedError } from '../errors/index.js'
 
 const register = async(req,res) => {
@@ -41,4 +41,8 @@ const login = async(req, res) => {
     res.status(StatusCodes.OK).json({ user, token, location: user.location})
 }
 
-export { register, login }
+const updateUser = async(req, res) => {
+    console.log("update user route")
+}
+
+export { register, login, updateUser }

@@ -12,62 +12,17 @@ export const getLatLngOutput = (lat, lng) => ({
     payload: {lat, lng}
 })
 
-// export const createUser = (formData, navigate) => {
-//     console.log(formData)
-//     return dispatch => {
-//         (fetch(BASE_URL + "/users", {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(formData),
-//         }))
-//         .then(res => handleUserResponse(res, dispatch))
-//         .then(navigate('/login/success', {replace: true}))
-//     }
-// }
-
-export const createUser = async({ formData }, dispatch) => {
-  console.log(formData)
-  try {
-    const { data } = await axios.post(`/api/v1/auth/register`, formData)
+export const authUser = (formData, dispatch, endpoint) => {
+  return async(dispatch) => {
+    const { data } = await axios.post(`/api/v1/auth/${endpoint}`, formData)
     const { user, token, location } = data
     dispatch({
       type: "SET_USER",
       payload: { user, token, location }
     })
     addUserToLocalStorage({ user, token, location })
-  } catch (error) {
-      console.log(error)
   }
 }
-
-export const loginUser = async({ formData }, dispatch) => {
-  console.log(formData)
-  try {
-    const { data } = await axios.post(`/api/v1/auth/register`, formData)
-    const { user, token, location } = data
-    dispatch({
-      type: "SET_USER",
-      payload: { user, token, location }
-    })
-    addUserToLocalStorage({ user, token, location })
-  } catch (error) {
-      console.log(error)
-  }
-}
-
-// export const loginUser = (formData, navigate) => {
-//     return dispatch => fetch(BASE_URL + "/sessions", {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(formData),
-//       })
-//       .then(res => handleUserResponse(res, dispatch))
-//       .then(navigate('/login/success', {replace: true}))
-//     }
 
 export const autoLoginUser = () => {
     return dispatch => fetch(BASE_URL + "/autologin", {
@@ -77,14 +32,6 @@ export const autoLoginUser = () => {
     })
     .then(res => handleUserResponse(res, dispatch))
   }
-
-// export const logoutUser = (navigate) => {
-//     return dispatch => {
-//         localStorage.clear("token")
-//         dispatch({type: "LOGOUT"})
-//         navigate('/welcome', {replace: true})
-//     }
-// }
 
 export const logoutUser = (dispatch) => {
   dispatch({type: "LOGOUT" })

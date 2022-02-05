@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 // import { useNavigate } from 'react-router'
 import { useNavigate, Link } from 'react-router-dom'
-import { createUser, getLatLngOutput } from '../../actions/userActions'
+import { authUser, getLatLngOutput } from '../../actions/userActions'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -17,7 +17,10 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Tooltip from '@mui/material/Tooltip'
 
-const AuthSignupForm = ({createUser}) => {
+const AuthSignupForm = ({authUser}) => {
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     useEffect(()=>{
         var options = { maxResults: 5 };
@@ -25,20 +28,24 @@ const AuthSignupForm = ({createUser}) => {
         manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
     }, [])
 
-    const [latLngOutput, setLatLngOutput] = useState({lat: null, lng: null})
-    const [username, setUsername] = useState('')
     const [values, setValues] = useState({
+        username: '',
         password: '',
         passwordConfirmation: '',
+        lat: null,
+        lng: null,
         showPassword: false
     })
-    const [open, setOpen] = useState(false)
-    const navigate = useNavigate()
 
+    const [open, setOpen] = useState(false)
+
+    const handleChange = (e) => {
+        setValues({...values, [e.target.name]: e.target.value})
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        values.password === values.passwordConfirmation ? createUser({ username: username, password: values.password, lat: latLngOutput.lat, lng: latLngOutput.lng}, navigate) : alert("Passwords do not match")
+        values.password === values.passwordConfirmation ? authUser({ username: values.username, password: values.password, lat: values.lat, lng: values.lat}, dispatch, "register") : alert("Passwords do not match")
     }
 
     const handleClickShowPassword = (e) => {
@@ -53,7 +60,7 @@ const AuthSignupForm = ({createUser}) => {
     }
     
     function selectedSuggestion(suggestionResult) {
-        setLatLngOutput({lat: suggestionResult.location.latitude, lng: suggestionResult.location.longitude})
+        setValues({...values, lat: suggestionResult.location.latitude, lng: suggestionResult.location.longitude})
     }
       
     return (
@@ -69,8 +76,9 @@ const AuthSignupForm = ({createUser}) => {
         <TextField
             id="outlined-name"
             label="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            value={values.username}
+            onChange={handleChange}
         />
         <br/>
         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -78,9 +86,10 @@ const AuthSignupForm = ({createUser}) => {
             <OutlinedInput
                     id="outlined-adornment-password"
                     // label="Password"
+                    name="password"
                     type={values.showPassword ? 'text' : 'password'}
                     value={values.password}
-                    onChange={(e) => setValues({password: e.target.value})}
+                    onChange={handleChange}
                     endAdornment={
                         <InputAdornment position="end">
                         <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
@@ -106,9 +115,10 @@ const AuthSignupForm = ({createUser}) => {
             <OutlinedInput
                 id="outlined-adornment-password-confirmation"
                     // label="Password"
+                name="passwordConfirmation"
                 type={values.showPassword ? 'text' : 'password'}
                 value={values.passwordConfirmation}
-                onChange={(e) => setValues({passwordConfirmation: e.target.value})}
+                onChange={handleChange}
                 endAdornment={
                     <InputAdornment position="end">
                         <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
@@ -130,8 +140,9 @@ const AuthSignupForm = ({createUser}) => {
         </FormControl>
         <br/>
         <br/>
-        <div id="searchBoxContainer" style={{margin: '0 auto', boxSizing: 'content-box'}} >
+        <div id="searchBoxContainer" style={{margin: '0 auto', boxSizing: 'content-box'}} onChange={(e) => e.preventDefault()} >
             <TextField
+                onKeyPress={e => e.key === 'Enter' && e.preventDefault()}
                 id="searchBox"
                 label="Location"
             />
@@ -148,4 +159,4 @@ const AuthSignupForm = ({createUser}) => {
     )
 }
 
-export default connect(null, { createUser, getLatLngOutput})(AuthSignupForm)
+export default connect(null, { authUser, getLatLngOutput})(AuthSignupForm)

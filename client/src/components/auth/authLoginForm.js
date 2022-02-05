@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
-import { loginUser } from '../../actions/userActions'
+import { authUser } from '../../actions/userActions'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -15,22 +15,22 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Tooltip from '@mui/material/Tooltip'
 
-const AuthLoginForm = ({loginUser}) => {
-
+const AuthLoginForm = ({authUser}) => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     
-    const [username, setUsername] = useState('')
     const [values, setValues] = useState({
+        username: '',
         password: '',
         showPassword: false
     })
+
     const [open, setOpen] = useState(false)
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        username !== '' && values.password !== '' ? loginUser({username: username, password: values.password}, navigate) : alert("All fields must be filled")
-        setUsername('')
-        setValues({password: '', showPassword: false})
+        values.username !== '' && values.password !== '' ? authUser({username: values.username, password: values.password}, dispatch, "login") : alert("All fields must be filled")
+        // setValues({password: '', showPassword: false})
     }
 
     const handleClickShowPassword = (e) => {
@@ -39,7 +39,9 @@ const AuthLoginForm = ({loginUser}) => {
             showPassword: !values.showPassword
         })
     }
-
+    const handleChange = (e) => {
+        setValues({...values, [e.target.name]: e.target.value})
+    }
     const handleMouseDownPassword = (e) => {
         e.preventDefault()
     }
@@ -54,8 +56,9 @@ const AuthLoginForm = ({loginUser}) => {
             <TextField
                 id="outlined-name"
                 label="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                name="username"
+                value={values.username}
+                onChange={handleChange}
             />
             <br/>
             <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -63,9 +66,10 @@ const AuthLoginForm = ({loginUser}) => {
                 <OutlinedInput
                     id="outlined-adornment-password"
                     // label="Password"
+                    name="password"
                     type={values.showPassword ? 'text' : 'password'}
                     value={values.password}
-                    onChange={(e) => setValues({password: e.target.value})}
+                    onChange={handleChange}
                     endAdornment={
                         <InputAdornment position="end">
                         <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
@@ -94,4 +98,4 @@ const AuthLoginForm = ({loginUser}) => {
     )
 }
 
-export default connect(null, { loginUser})(AuthLoginForm)
+export default connect(null, { authUser })(AuthLoginForm)

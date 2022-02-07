@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { connect, useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { authUser, getLatLngOutput } from '../../actions/userActions'
 
 import Box from '@mui/material/Box'

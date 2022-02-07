@@ -12,6 +12,7 @@ const ReportAnalyzeImage = ({ photo, handlePhotoUploaded, breeds, addPhoto, allo
     const [processing, setProcessing] = useState(false)
     const [fileSubmitted, setFileSubmitted] = useState(false)
     const [possibleBreed, setPossibleBreed] = useState('')
+    const [imagePreview, setImagePreview] = useState(null)
 
     const handleQuery = (e) => {
         setProcessing(true)

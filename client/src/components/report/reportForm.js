@@ -61,7 +61,7 @@ const ReportForm = (props) => {
     }, [dispatch])
 
     const handleChecked = (e) => {
-        setChecked
+        setChecked(true)
     }
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -106,7 +106,7 @@ const ReportForm = (props) => {
     const handleBreedSelect = (option) => {
         setDogId(option.value)
         setBreed(option.label)
-        setChecked[1]
+        setChecked([1])
     }
 
     const isStepOptional = (step) => {

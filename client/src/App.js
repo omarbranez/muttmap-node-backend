@@ -14,9 +14,7 @@ import ReportShow from './components/report/reportShow'
 import BreedsContainer from './containers/BreedsContainer';
 import Navbar from './components/navbar'
 import AuthForm from './components/auth/authForm'
-import AuthLoginForm from './components/auth/authLoginForm'
 import AuthLoginSuccess from './components/auth/authLoginSuccess'
-// import AuthSignupForm from './components/auth/authSignupForm'
 import AuthLogoutSuccess from './components/auth/authLogoutSuccess'
 import MapWithDrawer from './containers/MapWithDrawer'
 
@@ -36,7 +34,6 @@ const App = ({autoLoginUser}) => {
         <Route path='/breeds' element={<PrivateRoute><BreedsContainer/></PrivateRoute>} />
         <Route path='/login' element={<AuthForm />} />
         <Route path='/login/success' element={<AuthLoginSuccess />} />
-        {/* <Route path='/signup' element={<AuthSignupForm />} /> */}
         <Route path='/logout' element={<AuthLogoutSuccess />} />
         <Route path='/map' element={<PrivateRoute><MapWithDrawer/></PrivateRoute>}/>
       </Routes>

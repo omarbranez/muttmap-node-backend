@@ -5,7 +5,6 @@ const ProtectedRoute = ({children}) => {
     if(!user){
         return <Navigate to='/landing'/>
     }
-    // </div>
     return children
 }
 

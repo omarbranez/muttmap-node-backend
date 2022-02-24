@@ -69,6 +69,13 @@ const AuthForm = ({ authUser, user }) => {
         })
     }
 
+    const handleClickShowPasswordConfirmation = (e) => {
+        setValues({
+            ...values,
+            showPasswordConfirm: !values.showPasswordConfirm
+        })
+    }
+
     const handleMouseDownPassword = (e) => {
         e.preventDefault()
     }
@@ -204,7 +211,7 @@ const AuthForm = ({ authUser, user }) => {
                             <OutlinedInput
                                 id="outlined-adornment-password-confirmation"
                                 name="passwordConfirmation"
-                                type={values.showPassword ? 'text' : 'password'}
+                                type={values.showPasswordConfirm ? 'text' : 'password'}
                                 value={values.passwordConfirmation}
                                 onChange={handleChange}
                                 endAdornment={
@@ -212,7 +219,7 @@ const AuthForm = ({ authUser, user }) => {
                                         <Tooltip title={values.showPasswordConfirm ? 'Hide Password' : 'Show Password'} placement='top-start' open={openPasswordConfirmTooltip} disableHoverListener disableFocusListener>
                                             <IconButton
                                                 aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
+                                                onClick={handleClickShowPasswordConfirmation}
                                                 onMouseDown={handleMouseDownPassword}
                                                 onMouseEnter={() => setOpenPasswordConfirmTooltip(true)}
                                                 onMouseLeave={() => setOpenPasswordConfirmTooltip(false)}

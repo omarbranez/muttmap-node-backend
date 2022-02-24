@@ -85,12 +85,6 @@ const AuthForm = ({ authUser, user }) => {
         setRegistered(!registered)
     }
 
-
-    // const setLocationFromZip = (res) => {
-    //     setCityResult(res.features[0].properties.address.locality)
-    //     setValues({...values, lat: res.features[0].properties.geocodePoints[0].geometry.coordinates[1], lng:res.features[0].properties.geocodePoints[0].geometry.coordinates[0]})
-    // }
-
     const resetForm = () => {
         setValues({
             username: '',
@@ -104,9 +98,15 @@ const AuthForm = ({ authUser, user }) => {
         })
     }
 
-    const setLocationFromGeolocate = (city, zip) => {
-
+    const resetLocation = () => {
+        setValues({
+            lat: null,
+            lng: null,
+            locationCity: '',
+            locationZip: '',
+        })
     }
+
     const handleLocation = async() => {
         await fetch(`https://atlas.microsoft.com/geocode?api-version=2022-02-01-preview&subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&query=${parseInt(values.locationZip)}`)
         .then(res => res.json())
@@ -168,6 +168,7 @@ const AuthForm = ({ authUser, user }) => {
                             />
                             <Button onClick={handleLocation}>Use Location</Button>
                             {values.locationCity && <span>Ah, {values.locationCity}</span>}
+                            {values.locationCity && <span>Wrong location? <Button onClick={resetLocation}>Try again</Button></span>}
                         </FormControl>}
                         <FormControl margin="dense" style={{width: "25ch"}} >
                             <InputLabel>Username</InputLabel>

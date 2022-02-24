@@ -120,9 +120,9 @@ const Navbar = (props) => {
     return (
         <div>
             <Box sx={{ display: 'flex'}}>
-                <CssBaseline />
+                {/* <CssBaseline /> */}
                 <AppBar position="static" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1}} style={{background: 'linear-gradient(to left, #03018C, #212AA5, #4259C3, #7B9FF2' }}>
-                    <Toolbar>
+                    <Toolbar style={{position: "absolute"}}>
                         <IconButton
                             size="large"
                             edge="start"
@@ -150,11 +150,11 @@ const Navbar = (props) => {
         open={open}
       >
             {/* this is covered by the app bar */}
-        <DrawerHeader>
+        {/* <DrawerHeader>
           <IconButton onClick={handleDrawerClose}> 
             <img src={muttmapIconOpen} width="50" alt="hidden open drawericon" ></img>
           </IconButton>
-        </DrawerHeader>
+        </DrawerHeader> */}
           {/* this is covered by the app bar */}
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}> 

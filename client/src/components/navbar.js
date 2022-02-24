@@ -1,27 +1,28 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip'
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar from '@mui/material/AppBar';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import LoginIcon from '@mui/icons-material/Login';
-import MapTwoToneIcon from '@mui/icons-material/MapTwoTone';
-import AnnouncementSharpIcon from '@mui/icons-material/AnnouncementSharp';
-import PetsSharpIcon from '@mui/icons-material/PetsSharp';
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
-import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import FiberNewOutlinedIcon from '@mui/icons-material/FiberNewOutlined';
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
+import Toolbar from '@mui/material/Toolbar'
+// import Tooltip from '@mui/material/Tooltip'
+// import CssBaseline from '@mui/material/CssBaseline'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import MuiAppBar from '@mui/material/AppBar'
+import List from '@mui/material/List'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import LoginIcon from '@mui/icons-material/Login'
+import MapTwoToneIcon from '@mui/icons-material/MapTwoTone'
+import AnnouncementSharpIcon from '@mui/icons-material/AnnouncementSharp'
+import PetsSharpIcon from '@mui/icons-material/PetsSharp'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
+import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined'
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
+import FiberNewOutlinedIcon from '@mui/icons-material/FiberNewOutlined'
 
 import muttmapText from '../muttmap-text.png'
 import muttmapIconOpen from '../muttmap-menu-icon-open.png'
@@ -44,7 +45,7 @@ const AppBar = styled(MuiAppBar, {
             duration: theme.transitions.duration.enteringScreen,
         }),
     }),
-}));
+}))
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -53,7 +54,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
-}));
+}))
 
 const Navbar = (props) => {
 
@@ -62,22 +63,22 @@ const Navbar = (props) => {
         {
             path: "/map",
             text: "Map",
-            icon: <MapTwoToneIcon/>
+            icon: <MapTwoToneIcon />
         },
         {
             path: "/reports",
             text: "News Feed",
-            icon: <AnnouncementSharpIcon/>
+            icon: <AnnouncementSharpIcon />
         },
         {
             path: "breeds",
             text: "Breed Information",
-            icon: <PetsSharpIcon/>
+            icon: <PetsSharpIcon />
         },
         {
             path: "reports/new",
             text: "Create New Report",
-            icon: <AddBoxOutlinedIcon/>
+            icon: <AddBoxOutlinedIcon />
         }
     ]
 
@@ -85,12 +86,12 @@ const Navbar = (props) => {
         {
             path: `/profile/${user.username}`,
             text: "My Profile",
-            icon: <AccountBoxOutlinedIcon/>
+            icon: <AccountBoxOutlinedIcon />
         },
         {
             path: "/logout",
             text: "Log Out",
-            icon: <ExitToAppOutlinedIcon/>
+            icon: <ExitToAppOutlinedIcon />
         },
     ]
 
@@ -98,117 +99,123 @@ const Navbar = (props) => {
         {
             path: '/login',
             text: "Log In",
-            icon: <LoginIcon/>
+            icon: <LoginIcon />
         },
         {
             path: '/signup',
             text: "Create New Account",
-            icon: <FiberNewOutlinedIcon/>
+            icon: <FiberNewOutlinedIcon />
         }
     ]
 
-    const [open, setOpen] = useState(false);
-  
+    const [open, setOpen] = useState(false)
+
     const handleDrawerOpen = () => {
-      setOpen(true);
-    };
-  
+        setOpen(true)
+    }
+
     const handleDrawerClose = () => {
-      setOpen(false);
-    };
-  
+        setOpen(false)
+    }
+
+    const handleClickAway = () => {
+        setOpen(false)
+    }
+
     return (
         <div>
-            <Box sx={{ display: 'flex'}}>
+            <Box sx={{ display: 'flex' }}>
                 {/* <CssBaseline /> */}
-                <AppBar position="static" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1}} style={{background: 'linear-gradient(to left, #03018C, #212AA5, #4259C3, #7B9FF2' }}>
-                    <Toolbar style={{position: "absolute"}}>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            sx={{ mr: 2, ...(open && { display: 'none' })  }}
-                        >
-                            <img src={muttmapIconClosed} width="40" alt="muttmapIconClosed" ></img>
-                        </IconButton>
-                            <img src={muttmapText} height="45" style={{display: 'block', marginLeft: 'auto', marginRight: '500'}} alt="muttmap logo"></img> 
-                    </Toolbar>
-                </AppBar>
+                <ClickAwayListener onClickAway={handleClickAway}>
+                    <AppBar position="absolute" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: 'linear-gradient(to left, #03018C, #212AA5, #4259C3, #7B9FF2' }}>
+                        <Toolbar >
+                            <IconButton
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerOpen}
+                                sx={{ mr: 2, ...(open && { display: 'none' }) }}
+                            >
+                                <img src={muttmapIconClosed} width="40" alt="muttmapIconClosed" ></img>
+                            </IconButton>
+                            <img src={muttmapText} height="45" style={{ display: 'block', marginLeft: 'auto', marginRight: '500' }} alt="muttmap logo"></img>
+                        </Toolbar>
+                    </AppBar>
+                </ClickAwayListener>
                 <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="temporary"
-        anchor="left"
-        open={open}
-      >
-            {/* this is covered by the app bar */}
-        {/* <DrawerHeader>
+                    sx={{
+                        width: drawerWidth,
+                        flexShrink: 0,
+                        '& .MuiDrawer-paper': {
+                            width: drawerWidth,
+                            boxSizing: 'border-box',
+                        },
+                    }}
+                    variant="temporary"
+                    anchor="left"
+                    open={open}
+                >
+                    {/* this is covered by the app bar */}
+                    {/* <DrawerHeader>
           <IconButton onClick={handleDrawerClose}> 
             <img src={muttmapIconOpen} width="50" alt="hidden open drawericon" ></img>
           </IconButton>
         </DrawerHeader> */}
-          {/* this is covered by the app bar */}
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}> 
-            <img src={muttmapIconOpen} width="50" alt="open drawer icon" ></img>
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        {user.username ? 
-        <List>
-            {linkRoutesAndIcons.map((route) => (
-            <Link to={route.path} key={route.path}>
-                <ListItem button key={route.text} onClick={handleDrawerClose}>
-                    <ListItemIcon>
-                        {route.icon}
-                    </ListItemIcon>
-                <ListItemText primary={route.text} />
-                </ListItem>
-            </Link>
-          ))}
-        </List>
-        :
-        <List>
-            {loggedOutRoutesAndIcons.map((route) => (
-            <Link to={route.path} key={route.path}>
-                <ListItem button key={route.text} onClick={handleDrawerClose}>
-                    <ListItemIcon>
-                        {route.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={route.text} />
-                </ListItem>
-            </Link>
-            ))}
-        </List>
-        }
+                    {/* this is covered by the app bar */}
+                    <DrawerHeader>
+                        <IconButton onClick={handleDrawerClose}>
+                            <img src={muttmapIconOpen} width="50" alt="open drawer icon" ></img>
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    {user.username ?
+                        <List>
+                            {linkRoutesAndIcons.map((route) => (
+                                <Link to={route.path} key={route.path}>
+                                    <ListItem button key={route.text} onClick={handleDrawerClose}>
+                                        <ListItemIcon>
+                                            {route.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={route.text} />
+                                    </ListItem>
+                                </Link>
+                            ))}
+                        </List>
+                        :
+                        <List>
+                            {loggedOutRoutesAndIcons.map((route) => (
+                                <Link to={route.path} key={route.path}>
+                                    <ListItem button key={route.text} onClick={handleDrawerClose}>
+                                        <ListItemIcon>
+                                            {route.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={route.text} />
+                                    </ListItem>
+                                </Link>
+                            ))}
+                        </List>
+                    }
 
-        <Divider />
-        {user.username &&
-        <List>
-          {loggedInRoutesAndIcons.map((route) => (
-              <Link to={route.path}>
-              <ListItem button key={route.text} onClick={handleDrawerClose}>
-                <ListItemIcon>
-                    {route.icon}
-                </ListItemIcon>
-                <ListItemText primary={route.text} />
-              </ListItem>
-              </Link>
-          ))}
-        </List>
-        }
-      </Drawer>
+                    <Divider />
+                    {user.username &&
+                        <List>
+                            {loggedInRoutesAndIcons.map((route) => (
+                                <Link to={route.path}>
+                                    <ListItem button key={route.text} onClick={handleDrawerClose}>
+                                        <ListItemIcon>
+                                            {route.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={route.text} />
+                                    </ListItem>
+                                </Link>
+                            ))}
+                        </List>
+                    }
+                </Drawer>
             </Box>
         </div>
-    );
+    )
 }
 
 

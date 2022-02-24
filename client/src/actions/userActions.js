@@ -13,6 +13,7 @@ export const getLatLngOutput = (lat, lng) => ({
 })
 
 export const authUser = (formData, dispatch, endpoint) => {
+  console.log(formData)
   return async(dispatch) => {
     const { data } = await axios.post(`/api/v1/auth/${endpoint}`, formData)
     const { user, token, location } = data

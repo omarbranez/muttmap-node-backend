@@ -30,35 +30,11 @@ const AuthForm = ({ authUser, user }) => {
         passwordConfirmation: '',
         lat: null,
         lng: null,
+        locationZip: '',
         showPassword: false
     })
+    const [cityResult, setCityResult] = useState('')
     const [registered, setRegistered] = useState(true)
-
-    const makeAutosuggestBox = useCallback(() => {
-        const { Maps } = window.Microsoft
-        Maps.loadModule('Microsoft.Maps.AutoSuggest', function () {
-            const options = { maxResults: 5 }
-            const manager = new Maps.AutosuggestManager(options)
-            manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (window.Microsoft && window.Microsoft.Maps) {
-            makeAutosuggestBox()
-        } else {
-            const scriptTag = document.createElement("script")
-            scriptTag.setAttribute("type", "text/javascript")
-            scriptTag.setAttribute(
-                "src",
-                `https://www.bing.com/api/maps/mapcontrol?key=${process.env.REACT_APP_M_API_KEY}&callback=makeMap`
-            )
-            scriptTag.async = true
-            scriptTag.defer = true
-            document.body.appendChild(scriptTag)
-            window.makeAutosuggestBox = makeAutosuggestBox
-        }
-    }, [makeAutosuggestBox])
 
     useEffect(() => {
         if (user) {
@@ -93,10 +69,33 @@ const AuthForm = ({ authUser, user }) => {
     }
 
     const toggleMember = () => {
+        resetForm()
         setRegistered(!registered)
     }
-    function selectedSuggestion(suggestionResult) {
-        setValues({ ...values, lat: suggestionResult.location.latitude, lng: suggestionResult.location.longitude })
+
+
+    const setLocation = (res) => {
+        console.log(res.features[0].properties.geocodePoints[0].geometry.coordinates[1])
+        setCityResult(res.features[0].properties.address.locality)
+        setValues({...values, lat: res.features[0].properties.geocodePoints[0].geometry.coordinates[1], lng:res.features[0].properties.geocodePoints[0].geometry.coordinates[0]})
+    }
+
+    const resetForm = () => {
+        setValues({
+            username: '',
+            password: '',
+            passwordConfirmation: '',
+            lat: null,
+            lng: null,
+            showPassword: false
+        })
+        setCityResult('')
+    }
+
+    const handleLocation = () => {
+        fetch(`https://atlas.microsoft.com/geocode?api-version=2022-02-01-preview&subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&query=${parseInt(values.locationZip)}`)
+        .then(res => res.json())
+        .then(res => setLocation(res))
     }
 
     return (
@@ -109,14 +108,18 @@ const AuthForm = ({ authUser, user }) => {
                 </Box>
                 <form style={{ boxSizing: 'content-box'}} onSubmit={handleSubmit}>
                     <Grid container alignItems="center" style={{ display: "flex", flexDirection: "column", marginTop: "2vh",  }}>
-                    {!registered && <div id="searchBoxContainer" style={{ margin: "0.5vh", boxSizing: 'content-box' }} onChange={(e) => e.preventDefault()} >
-                            <TextField
-                                style={{width: "25ch", }}
-                                onKeyPress={e => e.key === 'Enter' && e.preventDefault()}
-                                id="searchBox"
+                        {!registered && <FormControl margin="dense" style={{width: "25ch", }}>
+                            <InputLabel>Location</InputLabel>
+                            <OutlinedInput
+                                id="outlined-location"
                                 label="Location"
+                                name="locationZip"
+                                value={values.locationZip}
+                                onChange={handleChange}
                             />
-                        </div>}
+                            <Button onClick={handleLocation}>Use Location</Button>
+                            {cityResult && <span>Ah, {cityResult}</span>}
+                        </FormControl>}
                         <FormControl margin="dense" style={{width: "25ch"}} >
                             <InputLabel>Username</InputLabel>
                             <OutlinedInput

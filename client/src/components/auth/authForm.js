@@ -38,7 +38,6 @@ const AuthForm = ({ authUser, user }) => {
         showPassword: false,
         showPasswordConfirm: false,
     })
-    // const [cityResult, setCityResult] = useState('')
     const [registered, setRegistered] = useState(true)
 
     useEffect(() => {
@@ -48,6 +47,14 @@ const AuthForm = ({ authUser, user }) => {
             }, 3000)
         }
     }, [user, navigate])
+
+    useEffect(()=> {
+        if (/[A-Za-z]/i.test(values.locationZip)) {
+            setValues({...values, locationZip: '' })
+            // setError({error: true ,errorMessage: "Please enter numbers only" })
+            alert("Please enter numbers only")
+        }
+    }, [values.locationZip])
 
     const handleChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
@@ -149,6 +156,8 @@ const AuthForm = ({ authUser, user }) => {
                                 name="locationZip"
                                 value={values.locationZip}
                                 onChange={handleChange}
+                                inputProps={{ pattern: "[0-9]{5}"}}
+                                required
                                 endAdornment={
                                     <InputAdornment position="end">
                                     <Tooltip title="Use Current Location" placement="bottom-start" open={openLocateTooltip} disableHoverListener disableFocusListener>
@@ -166,9 +175,9 @@ const AuthForm = ({ authUser, user }) => {
                                 }
                                 
                             />
-                            <Button onClick={handleLocation}>Use Location</Button>
-                            {values.locationCity && <span>Ah, {values.locationCity}</span>}
-                            {values.locationCity && <span>Wrong location? <Button onClick={resetLocation}>Try again</Button></span>}
+                            {!values.locationCity && <Button onClick={handleLocation}>Use Location</Button>}
+                            {values.locationCity && <span style={{marginTop: "1vh"}}>Ah, {values.locationCity}</span>}
+                            {values.locationCity && <span style={{marginTop: "1vh", color: "red"}}>Wrong location? <Button onClick={resetLocation}>Try again</Button></span>}
                         </FormControl>}
                         <FormControl margin="dense" style={{width: "25ch"}} >
                             <InputLabel>Username</InputLabel>
@@ -178,6 +187,7 @@ const AuthForm = ({ authUser, user }) => {
                                 name="username"
                                 value={values.username}
                                 onChange={handleChange}
+                                required
                             />
                         </FormControl>
                         <FormControl margin="dense" style={{width: "25ch"}}>
@@ -188,6 +198,7 @@ const AuthForm = ({ authUser, user }) => {
                                 type={values.showPassword ? 'text' : 'password'}
                                 value={values.password}
                                 onChange={handleChange}
+                                required
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={openPasswordTooltip} disableHoverListener disableFocusListener>
@@ -215,6 +226,7 @@ const AuthForm = ({ authUser, user }) => {
                                 type={values.showPasswordConfirm ? 'text' : 'password'}
                                 value={values.passwordConfirmation}
                                 onChange={handleChange}
+                                required
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Tooltip title={values.showPasswordConfirm ? 'Hide Password' : 'Show Password'} placement='top-start' open={openPasswordConfirmTooltip} disableHoverListener disableFocusListener>

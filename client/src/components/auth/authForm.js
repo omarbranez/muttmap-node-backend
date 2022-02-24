@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography'
 
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import MyLocationIcon from '@mui/icons-material/MyLocation';
 import InputAdornment from "@mui/material/InputAdornment"
 import OutlinedInput from '@mui/material/OutlinedInput'
 import FormControl from '@mui/material/FormControl'
@@ -22,8 +23,10 @@ const AuthForm = ({ authUser, user }) => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    console.log(!!user)
-    const [open, setOpen] = useState(false)
+
+    const [openPasswordTooltip, setOpenPasswordTooltip] = useState(false)
+    const [openPasswordConfirmTooltip, setOpenPasswordConfirmTooltip] = useState(false)
+    const [openLocateTooltip, setOpenLocateTooltip] = useState(false)
     const [values, setValues] = useState({
         username: '',
         password: '',
@@ -31,9 +34,11 @@ const AuthForm = ({ authUser, user }) => {
         lat: null,
         lng: null,
         locationZip: '',
-        showPassword: false
+        locationCity: '',
+        showPassword: false,
+        showPasswordConfirm: false,
     })
-    const [cityResult, setCityResult] = useState('')
+    // const [cityResult, setCityResult] = useState('')
     const [registered, setRegistered] = useState(true)
 
     useEffect(() => {
@@ -74,11 +79,10 @@ const AuthForm = ({ authUser, user }) => {
     }
 
 
-    const setLocation = (res) => {
-        console.log(res.features[0].properties.geocodePoints[0].geometry.coordinates[1])
-        setCityResult(res.features[0].properties.address.locality)
-        setValues({...values, lat: res.features[0].properties.geocodePoints[0].geometry.coordinates[1], lng:res.features[0].properties.geocodePoints[0].geometry.coordinates[0]})
-    }
+    // const setLocationFromZip = (res) => {
+    //     setCityResult(res.features[0].properties.address.locality)
+    //     setValues({...values, lat: res.features[0].properties.geocodePoints[0].geometry.coordinates[1], lng:res.features[0].properties.geocodePoints[0].geometry.coordinates[0]})
+    // }
 
     const resetForm = () => {
         setValues({
@@ -87,15 +91,31 @@ const AuthForm = ({ authUser, user }) => {
             passwordConfirmation: '',
             lat: null,
             lng: null,
-            showPassword: false
+            locationCity: '',
+            locationZip: '',
+            showPassword: false,
         })
-        setCityResult('')
     }
 
-    const handleLocation = () => {
-        fetch(`https://atlas.microsoft.com/geocode?api-version=2022-02-01-preview&subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&query=${parseInt(values.locationZip)}`)
+    const setLocationFromGeolocate = (city, zip) => {
+
+    }
+    const handleLocation = async() => {
+        await fetch(`https://atlas.microsoft.com/geocode?api-version=2022-02-01-preview&subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&query=${parseInt(values.locationZip)}`)
         .then(res => res.json())
-        .then(res => setLocation(res))
+        .then(res => setValues({...values, lat: res.features[0].properties.geocodePoints[0].geometry.coordinates[1], lng:res.features[0].properties.geocodePoints[0].geometry.coordinates[0], locationCity: res.features[0].properties.address.locality}))
+    }
+
+    const getCityFromCoords = async() => {
+        await fetch(`https://atlas.microsoft.com/search/address/reverse/json?subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&api-version=1.0&query=${values.lat},${values.lng}`)
+        // .then(res => console.log(res.json()))
+        .then(res => res.json())
+        // .then(res => setLocationFromGeolocate(res.addresses[0].address.localName, res.addresses[0].address.postalCode))
+        .then(res => setValues({...values, locationCity: res.addresses[0].address.localName, locationZip: res.addresses[0].address.postalCode }))
+    }
+    const handleUseCurrentLocation = async() => {
+        await navigator.geolocation.getCurrentPosition(position => setValues({...values, lat: position.coords.latitude, lng: position.coords.longitude}))
+        getCityFromCoords(values.lat, values.lng)
     }
 
     return (
@@ -111,14 +131,31 @@ const AuthForm = ({ authUser, user }) => {
                         {!registered && <FormControl margin="dense" style={{width: "25ch", }}>
                             <InputLabel>Location</InputLabel>
                             <OutlinedInput
+                                disabled={!!values.locationCity}
                                 id="outlined-location"
                                 label="Location"
                                 name="locationZip"
                                 value={values.locationZip}
                                 onChange={handleChange}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                    <Tooltip title="Use Current Location" placement="bottom-start" open={openLocateTooltip} disableHoverListener disableFocusListener>
+                                        <IconButton
+                                            aria-label="use current location"
+                                            onClick={handleUseCurrentLocation}
+                                            onMouseEnter={() => setOpenLocateTooltip(true)}
+                                            onMouseLeave={() => setOpenLocateTooltip(false)}
+                                            edge="end"
+                                        >
+                                            <MyLocationIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </InputAdornment>
+                                }
+                                
                             />
                             <Button onClick={handleLocation}>Use Location</Button>
-                            {cityResult && <span>Ah, {cityResult}</span>}
+                            {values.locationCity && <span>Ah, {values.locationCity}</span>}
                         </FormControl>}
                         <FormControl margin="dense" style={{width: "25ch"}} >
                             <InputLabel>Username</InputLabel>
@@ -140,13 +177,13 @@ const AuthForm = ({ authUser, user }) => {
                                 onChange={handleChange}
                                 endAdornment={
                                     <InputAdornment position="end">
-                                        <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
+                                        <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={openPasswordTooltip} disableHoverListener disableFocusListener>
                                             <IconButton
                                                 aria-label="toggle password visibility"
                                                 onClick={handleClickShowPassword}
                                                 onMouseDown={handleMouseDownPassword}
-                                                onMouseEnter={() => setOpen(true)}
-                                                onMouseLeave={() => setOpen(false)}
+                                                onMouseEnter={() => setOpenPasswordTooltip(true)}
+                                                onMouseLeave={() => setOpenPasswordTooltip(false)}
                                                 edge="end"
                                             >
                                                 {values.showPassword ? <VisibilityOff /> : <Visibility />}
@@ -167,16 +204,16 @@ const AuthForm = ({ authUser, user }) => {
                                 onChange={handleChange}
                                 endAdornment={
                                     <InputAdornment position="end">
-                                        <Tooltip title={values.showPassword ? 'Hide Password' : 'Show Password'} placement='top-start' open={open} disableHoverListener disableFocusListener>
+                                        <Tooltip title={values.showPasswordConfirm ? 'Hide Password' : 'Show Password'} placement='top-start' open={openPasswordConfirmTooltip} disableHoverListener disableFocusListener>
                                             <IconButton
                                                 aria-label="toggle password visibility"
                                                 onClick={handleClickShowPassword}
                                                 onMouseDown={handleMouseDownPassword}
-                                                onMouseEnter={() => setOpen(true)}
-                                                onMouseLeave={() => setOpen(false)}
+                                                onMouseEnter={() => setOpenPasswordConfirmTooltip(true)}
+                                                onMouseLeave={() => setOpenPasswordConfirmTooltip(false)}
                                                 edge="end"
                                             >
-                                                {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                                                {values.showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
                                             </IconButton>
                                         </Tooltip>
                                     </InputAdornment>

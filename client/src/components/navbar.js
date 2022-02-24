@@ -156,13 +156,6 @@ const Navbar = (props) => {
                     anchor="left"
                     open={open}
                 >
-                    {/* this is covered by the app bar */}
-                    {/* <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}> 
-            <img src={muttmapIconOpen} width="50" alt="hidden open drawericon" ></img>
-          </IconButton>
-        </DrawerHeader> */}
-                    {/* this is covered by the app bar */}
                     <DrawerHeader>
                         <IconButton onClick={handleDrawerClose}>
                             <img src={muttmapIconOpen} width="50" alt="open drawer icon" ></img>

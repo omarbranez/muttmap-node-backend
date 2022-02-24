@@ -106,16 +106,21 @@ const AuthForm = ({ authUser, user }) => {
         .then(res => setValues({...values, lat: res.features[0].properties.geocodePoints[0].geometry.coordinates[1], lng:res.features[0].properties.geocodePoints[0].geometry.coordinates[0], locationCity: res.features[0].properties.address.locality}))
     }
 
-    const getCityFromCoords = async() => {
-        await fetch(`https://atlas.microsoft.com/search/address/reverse/json?subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&api-version=1.0&query=${values.lat},${values.lng}`)
-        // .then(res => console.log(res.json()))
-        .then(res => res.json())
-        // .then(res => setLocationFromGeolocate(res.addresses[0].address.localName, res.addresses[0].address.postalCode))
-        .then(res => setValues({...values, locationCity: res.addresses[0].address.localName, locationZip: res.addresses[0].address.postalCode }))
+    const getPosition = () => {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        })
     }
+    
     const handleUseCurrentLocation = async() => {
-        await navigator.geolocation.getCurrentPosition(position => setValues({...values, lat: position.coords.latitude, lng: position.coords.longitude}))
-        getCityFromCoords(values.lat, values.lng)
+        try {
+            let {coords} = await getPosition()            
+            const res = await fetch(`https://atlas.microsoft.com/search/address/reverse/json?subscription-key=${process.env.REACT_APP_AZURE_SUB_KEY}&api-version=1.0&query=${coords.latitude},${coords.longitude}`)
+            .then(res => res.json())
+            .then(res => setValues({...values, locationCity: res.addresses[0].address.localName, locationZip: res.addresses[0].address.postalCode, lat: coords.latitude, lng: coords.longitude}))
+        } catch(error) {
+            console.error(error)
+        }
     }
 
     return (

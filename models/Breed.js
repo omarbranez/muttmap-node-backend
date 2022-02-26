@@ -20,11 +20,11 @@ const breedSchema = new mongoose.Schema(
             type: String,
             default: "Unknown"
         },
-        group: {
+        breedGroup: {
             type: String,
             default: "Unknown"
         },
-        purpose: {
+        bredFor: {
             type: String,
             default: "Unknown"
         },

@@ -20,10 +20,10 @@ const userSchema = new mongoose.Schema(
             select: false,
         },
         lat: {
-            type: String,
+            type: Number,
         },
         lng: {
-            type: String,
+            type: Number,
         }
         // reports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Report'}],
         // reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction'}],

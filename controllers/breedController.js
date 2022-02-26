@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from '../errors/index.js'
 
 const getAllBreeds = async(req, res) => {
     const breeds = await Breed.find({})
-    res.status(StatusCodes.OK).json({ breeds })
+    res.status(StatusCodes.OK).json( {breeds})
 }
 
 const getOneBreed = async(req, res) => {
@@ -15,5 +15,7 @@ const getOneBreed = async(req, res) => {
     }
     res.status(StatusCodes.OK).json({ breed })
 }
+
+// const createBreeds = async
 
 export { getAllBreeds, getOneBreed }

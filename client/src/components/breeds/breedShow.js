@@ -26,31 +26,28 @@ const ExpandMore = styled((props) => {
 
 const BreedShow = (props) => {
   const [expanded, setExpanded] = useState(false)
-  const [count, setCount] = useState(0)
   // console.log(props.reportData)
   const handleExpandClick = () => {
     setExpanded(!expanded)
   }
-  // console.log(props.image)
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            {props.breed[0]}
+            {props.name[0]}
           </Avatar>
         }
-        title={props.breed}
+        title={props.name}
+        subheader={props.breedGroup + " Group"}
       />
       <CardMedia
         component="img"
         height="194"
-        src={props.image}
-        alt={props.breed_group + " Group"}
+        src={props.imageUrl}
+        alt={props.breedGroup + " Group"}
       />
-        <div>
-          <button onClick={()=>setCount(count+1)}>{count}</button>
-        </div>
+
       <CardActions disableSpacing>
         <ExpandMore
           expand={expanded}

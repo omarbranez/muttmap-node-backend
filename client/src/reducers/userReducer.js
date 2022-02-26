@@ -1,9 +1,12 @@
-
+const user = localStorage.getItem('user')
+const token = localStorage.getItem('token')
+const location = localStorage.getItem('location')
 const initialState = {
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    token: JSON.parse(localStorage.getItem('token')) || null,
-    location: JSON.parse(localStorage.getItem('location')) || '',
-    defaultCenter: {
+
+    user: JSON.parse(user) || null,
+    token: token || null,
+    location: location || null,
+    defaultLocation: {
         lat: null,
         lng: null
     },
@@ -23,7 +26,8 @@ const userReducer = (state=initialState, action) => {
                 lng: action.payload.lng,
             }}
         case "SET_USER":
-            return {...state, user: action.payload.user, token: action.payload.token, location: action.payload.location }
+            console.log(action.payload)
+            return {...state, user: action.payload.user, token: action.payload.token, defaultLocation: { lat: action.payload.location[0], lng: action.payload.location[1] }}
         case "SET_DEFAULT_CENTER":
             return {
                 ...state,

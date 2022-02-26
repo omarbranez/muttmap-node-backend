@@ -63,7 +63,7 @@ const AuthForm = ({ authUser, user }) => {
         if (registered) {
             authUser({ username: values.username, password: values.password }, dispatch, "login")
         } else {
-            values.password === values.passwordConfirmation ? authUser({ username: values.username, password: values.password, lat: values.lat, lng: values.lat }, dispatch, "register") : alert("Passwords do not match")
+            values.password === values.passwordConfirmation ? authUser({ username: values.username, password: values.password, lat: values.lat, lng: values.lng }, dispatch, "register") : alert("Passwords do not match")
         }
     }
 

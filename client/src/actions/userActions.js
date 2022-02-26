@@ -13,7 +13,6 @@ export const getLatLngOutput = (lat, lng) => ({
 })
 
 export const authUser = (formData, dispatch, endpoint) => {
-  console.log(formData)
   return async(dispatch) => {
     const { data } = await axios.post(`/api/v1/auth/${endpoint}`, formData)
     const { user, token, location} = data
@@ -40,9 +39,11 @@ export const logoutUser = (dispatch) => {
 }
 
 const addUserToLocalStorage = ({ user, token, location }) => {
+  console.log(token)
+  console.log(location)
   localStorage.setItem('user', JSON.stringify(user))
   localStorage.setItem('token', token)
-  localStorage.setItem('location', location)
+  localStorage.setItem('location', `${location.lat}, ${location.lng}`)
 }
 
 const removeUserFromLocalStorage = () => {

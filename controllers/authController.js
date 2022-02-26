@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, UnauthenticatedError } from '../errors/index.js'
 
 const register = async(req,res) => {
-    const { username, password, location } = req.body
+    const { username, password, lat, lng } = req.body
     if (!username || !password ) {
         throw new BadRequestError("Please fill all fields")
     }
@@ -13,7 +13,7 @@ const register = async(req,res) => {
         throw new BadRequestError("That user name already exists")
     }
 
-    const user = await User.create({ username, password })
+    const user = await User.create({ username, password, lat, lng })
     const token = user.createToken()
 
     res.status(StatusCodes.OK).json({ user: {username: user.username}, token, location: [user.lat, user.lng] })

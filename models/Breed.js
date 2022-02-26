@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-const BreedSchema = new mongoose.Schema(
+const breedSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -35,5 +35,5 @@ const BreedSchema = new mongoose.Schema(
 
     }
 )
-
+const Breed = mongoose.model("Breed", breedSchema)
 export default Breed

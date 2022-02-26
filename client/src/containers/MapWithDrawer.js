@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getReports, toggleReportWindow } from '../actions/reportActions'
-import { setGeolocatedCenter, resetCenter, setMarkerCenter } from '../actions/mapActions'
+import { setGeolocatedLocation, resetLocation, setMarkerLocation } from '../actions/mapActions'
 import { styled, useTheme } from '@mui/material/styles';
 import GoogleMapReact from 'google-map-react/'
-import { MarkerClusterer } from '@googlemaps/markerclusterer'
+// import { MarkerClusterer } from '@googlemaps/markerclusterer'
 import MapMarker from '../components/map/mapMarker'
 import MapReportButton from '../components/map/mapReportButton'
 import MapCurrentLocationButton from '../components/map/mapCurrentLocationButton'
@@ -16,6 +16,7 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Tooltip from '@mui/material/Tooltip'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
 import CssBaseline from '@mui/material/CssBaseline';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
@@ -31,7 +32,8 @@ const drawerWidth = 240;
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
       flexGrow: 1,
-      padding: theme.spacing(1),
+    //   padding: theme.spacing(1),
+        paddingTop: "6vh",
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -50,7 +52,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0, 2),
+    // padding: theme.spacing(0, 2),
+    paddingTop: "10vh",
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-start',
@@ -72,13 +75,13 @@ const MapContainer = (props) => {
     const [filteredReports, setFilteredReports] = useState(null)
 
     useEffect(() => {
-        dispatch(getReports())
-    }, [dispatch])
+        getReports(dispatch)
+    }, [])
 
     useEffect(() => {
-        center.current = props.currentCenter
+        center.current = props.currentLocation
         // return resetCenter
-    }, [center, resetCenter, props.currentCenter])
+    }, [center, resetLocation, props.currentLocation])
 
     useEffect(() => {
         if (mapRef.current) {
@@ -87,16 +90,16 @@ const MapContainer = (props) => {
     }, [mapRef])
 
     useEffect(()=>{
-        return resetCenter()
-    },[resetCenter])
+        return resetLocation()
+    },[resetLocation])
 
     const filterReports = (reports, bounds) => {
         setFilteredReports(reports.filter(report => inBoundingBox(bounds[0], bounds[1], report.lat, report.lng)))
     }
 
-    useEffect(() => {
-        bounds && filterReports(props.reports, bounds)
-    }, [bounds, props.reports ])
+    // useEffect(() => {
+    //     bounds && filterReports(props.reports, bounds)
+    // }, [bounds, props.reports ])
 
     const handleOnLoad = ({ map, maps }) => { // this is the only way to add controls to google maps api
         mapRef.current = { map, maps }
@@ -107,12 +110,12 @@ const MapContainer = (props) => {
         map.controls[maps.ControlPosition.LEFT_BOTTOM].push(controlButtonDiv)
 
         const currentLocationButtonDiv = document.createElement('div')
-        currentLocationButtonDiv.addEventListener('click', () => { props.setGeolocatedCenter() })
+        currentLocationButtonDiv.addEventListener('click', () => { props.setGeolocatedLocation(dispatch) })
         ReactDOM.render(<MapCurrentLocationButton />, currentLocationButtonDiv)
         map.controls[maps.ControlPosition.LEFT_BOTTOM].push(currentLocationButtonDiv)
 
         const defaultLocationButtonDiv = document.createElement('div')
-        defaultLocationButtonDiv.addEventListener('click', () => { props.resetCenter() })
+        defaultLocationButtonDiv.addEventListener('click', () => { props.resetLocation() })
         ReactDOM.render(<MapDefaultLocationButton />, defaultLocationButtonDiv)
         map.controls[maps.ControlPosition.LEFT_BOTTOM].push(defaultLocationButtonDiv)
 
@@ -122,7 +125,7 @@ const MapContainer = (props) => {
             <IconButton sx={{ ...(open && { display: 'none' }) }}  
                         color="inherit"
                         aria-label="open drawer"
-                        edge="end"
+                        // edge="end"
                         onMouseEnter={()=>setShowReportButtonTooltip(true)}
                         onMouseLeave={()=>setShowReportButtonTooltip(false)}
                         onClick={()=>setShowReportButtonTooltip(false)}> 
@@ -148,7 +151,7 @@ const MapContainer = (props) => {
             })
         }
 
-        new MarkerClusterer({map, markers})
+        // new MarkerClusterer({map, markers})
     }
 
     const handleDrawerOpen = () => {
@@ -160,7 +163,7 @@ const MapContainer = (props) => {
     };
     const handleListItemClick = (lat, lng) => {
         // console.log(handleOnLoad(lat, lng))
-        props.setMarkerCenter(lat, lng)
+        props.setMarkerLocation(lat, lng)
         setZoom(16)
     }
     
@@ -182,15 +185,14 @@ const MapContainer = (props) => {
     function isEmpty(str) {
         return (!str || str.length === 0 );
     }
-
+    console.log(props.user.user.lat)
     const renderMap = () => 
-        <div>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex',}}>
                 <CssBaseline />
-                <Main open={open} sx={{ height: [null, null, 680], zIndex: 1 }}>
+                <Main open={open} sx={{ height: "100vh", zIndex: 1 }}>
                     <GoogleMapReact
                         bootstrapURLKeys={{ key: `${process.env.REACT_APP_B_API_KEY}` }}
-                        center={props.currentCenter}
+                        center={{lat: props.user.user.lat, lng: props.user.user.lng}}
                         defaultZoom={15}
                         yesIWantToUseGoogleMapApiInternals
                         onGoogleApiLoaded={handleOnLoad}
@@ -219,6 +221,7 @@ const MapContainer = (props) => {
                             style={{height: 40, width:20}}/>) : <MapLoadingSpinner text="Loading"/>}
                     </GoogleMapReact>
                 </Main>
+                {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}
                 <Drawer
                     sx={{
                         width: drawerWidth,
@@ -230,20 +233,16 @@ const MapContainer = (props) => {
                     variant="persistent"
                     anchor="right"
                     open={open}
+
                 > 
-                {/* this is covered by the app bar */}
-                    <DrawerHeader> 
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                        </IconButton>
-                    </DrawerHeader>
-                {/* this is covered by the app bar */}
                     <DrawerHeader>
-                    <Tooltip title='Click here to see a list of reports!' placement='left' open={showReportButtonTooltip} disableHoverListener disableFocusListener>
+                    {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}
+                    <Tooltip title='Click here to see a list of reports!' placement='left-start' open={showReportButtonTooltip} disableHoverListener disableFocusListener>
                         <IconButton onClick={handleDrawerClose}>
                             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                         </Tooltip>
+                        {/* </ClickAwayListener> */}
                     </DrawerHeader>
                     <Divider />
                     <List >
@@ -264,20 +263,19 @@ const MapContainer = (props) => {
                     </List>
                 </Drawer>
             </Box>
-        </div>
     
-  return props.loading === false && props.currentCenter ? !props.geolocating ? renderMap() : <MapLoadingSpinner text={"Locating"}/> : <MapLoadingSpinner text={"Loading"}/>
+  return props.loading === false && props.currentLocation ? !props.geolocating ? renderMap() : <MapLoadingSpinner text={"Locating"}/> : <MapLoadingSpinner text={"Loading"}/>
 
   
 }
 
 const mapStateToProps = (state) => ({
     reports: state.reports.reports,
-    userCenter: state.user.defaultCenter,
-    currentCenter: state.user.currentCenter,
+    defaultLocation: state.user.defaultLocation,
+    currentLocation: state.user.currentLocation,
     geolocating: state.user.geolocating,
     loading: state.reports.loading,
     user: state.user   
 })
 
-export default connect(mapStateToProps, { getReports, toggleReportWindow, setGeolocatedCenter, setMarkerCenter, resetCenter })(MapContainer)
+export default connect(mapStateToProps, { getReports, toggleReportWindow, setGeolocatedLocation, setMarkerLocation, resetLocation })(MapContainer)

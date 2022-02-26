@@ -6,7 +6,7 @@ import ReportFormMap from './reportFormMap'
 import ReportAnalyzeImage from './reportAnalyzeImage'
 import { createReport, reportFormChange, reportFormSelectChange, reportFormImageChange, setSelectedReport } from '../../actions/reportActions'
 import { getBreeds } from '../../actions/breedActions'
-import { setGeolocatedCenter } from '../../actions/mapActions'
+import { setGeolocatedLocation } from '../../actions/mapActions'
 import { colors } from '../../colors'
 import MuttmapNewReport from '../../muttmap-new-dog-report.png'
 import Stepper from '@mui/material/Stepper'
@@ -57,7 +57,7 @@ const ReportForm = (props) => {
     }, [dispatch])
 
     useEffect(() => {
-        dispatch(setGeolocatedCenter())
+        dispatch(setGeolocatedLocation())
     }, [dispatch])
 
     const handleChecked = (e) => {
@@ -81,8 +81,8 @@ const ReportForm = (props) => {
     }
 
     const handleCurrentLocationClick = () => {
-        triggerInput(document.getElementById("lat-field"), props.currentCenter.lat)
-        triggerInput(document.getElementById("lng-field"), props.currentCenter.lng)
+        triggerInput(document.getElementById("lat-field"), props.currentLocation.lat)
+        triggerInput(document.getElementById("lng-field"), props.currentLocation.lng)
     }
 
     const sendMapToForm = ({ lat, lng }) => {
@@ -182,7 +182,7 @@ const ReportForm = (props) => {
                     )}
 
                     <div >
-                        {showMap && !props.geolocating ? <ReportFormMap mapCoordinates={props.currentCenter} mapLoading={props.geolocating} sendMapToForm={sendMapToForm} confirmClicked={confirmClicked} /> : null}
+                        {showMap && !props.geolocating ? <ReportFormMap mapCoordinates={props.currentLocation} mapLoading={props.geolocating} sendMapToForm={sendMapToForm} confirmClicked={confirmClicked} /> : null}
                     </div>
                     {activeStep === 1 && (
                         <div>
@@ -301,7 +301,7 @@ const ReportForm = (props) => {
 const mapStateToProps = (state) => ({
     breeds: state.breeds.breeds,
     loading: state.breeds.loading,
-    currentCenter: state.user.currentCenter,
+    currentLocation: state.user.currentLocation,
     geolocating: state.user.geolocating,
     user: state.user
 })

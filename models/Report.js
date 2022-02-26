@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-const ReportSchema = new mongoose.Schema(
+const reportSchema = new mongoose.Schema(
     {
         createdBy: {
             type: mongoose.Types.ObjectId,
@@ -53,8 +53,12 @@ const ReportSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        image: {
+            data: Buffer,
+            contentType: String
+        }
     },
     { timestamps: true }
 )
-
+const Report = mongoose.model("Report", reportSchema)
 export default Report

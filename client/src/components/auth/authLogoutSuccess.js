@@ -1,13 +1,15 @@
 import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { logoutUser } from '../../actions/userActions'
 
 const AuthLogoutSuccess = (props) => {
+
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     useEffect(() => {
         const timer = setTimeout(() => {
-            props.logoutUser(navigate)
+            props.logoutUser(dispatch)
         }, 1500) 
         return () => clearTimeout(timer)
     })

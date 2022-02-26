@@ -57,7 +57,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 const Navbar = (props) => {
-
     const user = props.user
     const linkRoutesAndIcons = [
         {
@@ -124,7 +123,7 @@ const Navbar = (props) => {
 
     return (
         <div>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', }}>
                 {/* <CssBaseline /> */}
                 <ClickAwayListener onClickAway={handleClickAway}>
                     <AppBar position="absolute" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: 'linear-gradient(to left, #03018C, #212AA5, #4259C3, #7B9FF2' }}>

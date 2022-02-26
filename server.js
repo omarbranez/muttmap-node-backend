@@ -3,15 +3,18 @@ import express from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import 'express-async-errors'
+import Grid from 'gridfs-stream'
 import connectDB from './db/connect.js'
 import authRouter from './routes/authRoutes.js'
 import breedRouter from './routes/breedRoutes.js'
+import reportRouter from './routes/reportRoutes.js'
 import notFoundMiddleware from './middleware/not-found.js'
 import errorHandlerMiddleware from './middleware/error-handler.js'
 
 const app = express()
 
 dotenv.config()
+
 
 // morgan logs http requests in terminal
 if(process.env.NODE_ENV !== 'production'){
@@ -30,6 +33,7 @@ app.get('/api/v1', (req, res) => {
 
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/breeds', breedRouter)
+app.use('/api/v1/reports', reportRouter)
 
 app.use(errorHandlerMiddleware)
 app.use(notFoundMiddleware)
@@ -43,6 +47,7 @@ const start = async() => {
         app.listen(port,()=>{
             console.log(`SERVER LISTENING ON PORT ${port}`)
         })
+        
     } catch (error){
         console.log(error)
     }

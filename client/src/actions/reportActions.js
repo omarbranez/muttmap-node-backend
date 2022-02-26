@@ -1,21 +1,39 @@
+import axios from 'axios'
+
+const BASE_URL = "http://localhost:3000/"
+
 const REPORTS_URL = 'http://localhost:3000/reports'
 const REACTIONS_URL = 'http://localhost:3000/reactions'
 const COMMENTS_URL = 'http://localhost:3000/comments'
-export const getReports = () => {
-    return dispatch => {
-        dispatch({ type: "LOADING_REPORTS"})
-        fetch(REPORTS_URL, {
-            headers: {
-            // 'Access-Control-Allow-Origin'
-            'Authorization': localStorage.token,
-            }
-        })
-        .then(res => res.json())
-        .then(responseJSON => dispatch({
+// export const getReports = () => {
+//     return dispatch => {
+//         dispatch({ type: "LOADING_REPORTS"})
+//         fetch(REPORTS_URL, {
+//             headers: {
+//             // 'Access-Control-Allow-Origin'
+//             'Authorization': localStorage.token,
+//             }
+//         })
+//         .then(res => res.json())
+//         .then(responseJSON => dispatch({
+//             type: "ADD_REPORTS",
+//             payload: responseJSON,
+//         })
+//     )}
+// }
+
+export const getReports = async(dispatch) => {
+    dispatch({ type: "LOADING_REPORTS"})
+    try {
+        const {data} = await axios.get(`/api/v1/reports`)
+        const { reports } = data
+        dispatch({
             type: "ADD_REPORTS",
-            payload: responseJSON,
+            payload: reports
         })
-    )}
+    } catch(error){
+        console.log(error)
+    }
 }
 
 export const getFilteredReports = () => {

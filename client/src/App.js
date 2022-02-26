@@ -2,7 +2,7 @@ import './marker.css'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getReports } from './actions/reportActions'
-import { setGeolocatedCenter } from './actions/mapActions'
+import { setGeolocatedLocation} from './actions/mapActions'
 import { autoLoginUser, logoutUser } from './actions/userActions';
 import React, { useEffect } from 'react'
 import PrivateRoute from './containers/PrivateRoute'
@@ -20,7 +20,7 @@ import AuthLoginSuccess from './components/auth/authLoginSuccess'
 import AuthLogoutSuccess from './components/auth/authLogoutSuccess'
 import MapWithDrawer from './containers/MapWithDrawer'
 
-const App = ({autoLoginUser}) => {
+const App = () => {
   // useEffect(() => localStorage.token && autoLoginUser(), [autoLoginUser])
 
   return (
@@ -44,7 +44,7 @@ const App = ({autoLoginUser}) => {
     )
   }
 
-const mapStateToProps = (state) => {
-  return {user: state.user}
-}
-export default connect(mapStateToProps, {getReports, setGeolocatedCenter, autoLoginUser, logoutUser })(App)
+const mapStateToProps = (state) => ({
+  user: state.user
+})
+export default connect(mapStateToProps, {getReports, setGeolocatedLocation, autoLoginUser, logoutUser })(App)

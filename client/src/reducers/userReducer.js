@@ -10,7 +10,7 @@ const initialState = {
         lat: null,
         lng: null
     },
-    currentCenter: { 
+    currentLocation: { 
         lat: null,
         lng: null,
     },
@@ -27,13 +27,13 @@ const userReducer = (state=initialState, action) => {
             }}
         case "SET_USER":
             console.log(action.payload)
-            return {...state, user: action.payload.user, token: action.payload.token, defaultLocation: { lat: action.payload.location[0], lng: action.payload.location[1] }}
+            return {...state, user: action.payload.user.username, token: action.payload.user.token, defaultLocation: { lat: action.payload.location[0], lng: action.payload.location[1] }}
         case "SET_DEFAULT_CENTER":
             return {
                 ...state,
-                currentCenter: {
-                    lat: state.defaultCenter.lat,
-                    lng: state.defaultCenter.lng,
+                currentLocation: {
+                    lat: state.defaultLocation.lat,
+                    lng: state.defaultLocation.lng,
                 }
             }
         case "SET_NEW_CENTER":
@@ -43,7 +43,7 @@ const userReducer = (state=initialState, action) => {
         case "FINISHED_GEOLOCATING":
             return {...state, geolocating: false}
         case "LOGOUT":
-            return {...initialState, user: null, token: null, location: ''}
+            return {...initialState, user: null, token: null, location: null}
         default:
             return {...state}
     }

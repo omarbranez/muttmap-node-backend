@@ -12,7 +12,6 @@ const seedBreeds = async() => {
         const url = "https://api.thedogapi.com/v1/breeds"
         const response = await fetch(url)
         const breedData = await response.json()
-        // console÷.log(json)
         for (let i = 0; i < breedData.length; i++) {
             await Breed.create({
                 name: breedData[i].name,

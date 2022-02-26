@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 
 const MapLoadingSpinner = ({text}) => {
     return(
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <Box sx={{ position: 'relative', display: 'inline-flex', paddingTop: "10vh" }}>
             <CircularProgress size={"100px"} />
             <Box
                 sx={{

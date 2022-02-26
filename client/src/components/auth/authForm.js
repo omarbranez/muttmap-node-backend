@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { authUser, getLatLngOutput } from '../../actions/userActions'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
@@ -51,7 +50,6 @@ const AuthForm = ({ authUser, user }) => {
     useEffect(()=> {
         if (/[A-Za-z]/i.test(values.locationZip)) {
             setValues({...values, locationZip: '' })
-            // setError({error: true ,errorMessage: "Please enter numbers only" })
             alert("Please enter numbers only")
         }
     }, [values.locationZip])

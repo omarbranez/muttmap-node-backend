@@ -16,7 +16,7 @@ export const authUser = (formData, dispatch, endpoint) => {
   console.log(formData)
   return async(dispatch) => {
     const { data } = await axios.post(`/api/v1/auth/${endpoint}`, formData)
-    const { user, token, location } = data
+    const { user, token, location} = data
     dispatch({
       type: "SET_USER",
       payload: { user, token, location }
@@ -55,8 +55,7 @@ const handleUserResponse = (res, dispatch) => {
     if (res.ok) {
       res.json()
       .then(response => {
-          // console.log(response)
-          // console.log(response.user)
+
         localStorage.token = response.token
         dispatch({type: "SET_USER", payload: response.user})
       })

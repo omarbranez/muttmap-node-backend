@@ -16,7 +16,7 @@ const register = async(req,res) => {
     const user = await User.create({ username, password })
     const token = user.createToken()
 
-    res.status(StatusCodes.OK).json({ user: {username: user.username, location: user.location}, token })
+    res.status(StatusCodes.OK).json({ user: {username: user.username}, token, location: [user.lat, user.lng] })
 }
 
 const login = async(req, res) => {
@@ -38,7 +38,7 @@ const login = async(req, res) => {
     const token = user.createToken()
     user.password = undefined
     
-    res.status(StatusCodes.OK).json({ user, token, location: user.location})
+    res.status(StatusCodes.OK).json({ user, token, location: [user.lat, user.lng]})
 }
 
 const updateUser = async(req, res) => {

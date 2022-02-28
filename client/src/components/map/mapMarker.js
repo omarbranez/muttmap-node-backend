@@ -9,6 +9,7 @@ const MapMarker = (props) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [hovered, setHovered] = useState(false)
+  const [opened, setOpened] = useState(false)
 
   const handleMouseEnter = () => {
     setHovered(true)
@@ -18,9 +19,12 @@ const MapMarker = (props) => {
     setHovered(false)
   }
 
+  const handleOpened = () => {
+    setOpened(!opened)
+  }
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> 
-      {props.show === true ? <MapInfoWindow key={props.id} report={props} clickable={true}/> : null}
+      {opened ? <MapInfoWindow key={props._id} report={props} clickable={true} handleOpened={handleOpened}/> : null}
     </div>
   )
 }

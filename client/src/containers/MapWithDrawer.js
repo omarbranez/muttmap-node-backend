@@ -5,7 +5,7 @@ import { getReports, toggleReportWindow } from '../actions/reportActions'
 import { setGeolocatedLocation, resetLocation, setMarkerLocation } from '../actions/mapActions'
 import { styled, useTheme } from '@mui/material/styles';
 import GoogleMapReact from 'google-map-react/'
-// import { MarkerClusterer } from '@googlemaps/markerclusterer'
+import { MarkerClusterer } from '@googlemaps/markerclusterer'
 import MapMarker from '../components/map/mapMarker'
 import MapReportButton from '../components/map/mapReportButton'
 import MapCurrentLocationButton from '../components/map/mapCurrentLocationButton'
@@ -97,13 +97,13 @@ const MapContainer = (props) => {
         setFilteredReports(reports.filter(report => inBoundingBox(bounds[0], bounds[1], report.lat, report.lng)))
     }
 
-    // useEffect(() => {
-    //     bounds && filterReports(props.reports, bounds)
-    // }, [bounds, props.reports ])
+    useEffect(() => {
+        bounds && filterReports(props.reports, bounds)
+    }, [bounds, props.reports ])
 
     const handleOnLoad = ({ map, maps }) => { // this is the only way to add controls to google maps api
         mapRef.current = { map, maps }
-
+        let InforObj = []
         const controlButtonDiv = document.createElement('div')
         controlButtonDiv.addEventListener('click', () => { navigate('/reports/new') })
         ReactDOM.render(<MapReportButton />, controlButtonDiv)
@@ -136,22 +136,53 @@ const MapContainer = (props) => {
         const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         const markers = props.reports && props.reports.map((report, i) => {
+        
             const lat = report.lat
             const lng = report.lng
             const location = { lat, lng }
-            // console.log(report)console.log
-            // console.log(location) 
-            return new maps.Marker({position: location, label: labels[i % labels.length]})
+            console.log(location)
+
+            return new maps.Marker({position: location, label: labels[i % labels.length], report: report})
         })
 
-        for (const marker of markers) {
+        for (const marker of markers) { 
             maps.event.addListener(marker, 'click', function() {
-                map.setZoom(18)
+                // console.log("marker!")
+                // map.setZoom(18)
                 map.setCenter(marker.getPosition())
             })
         }
 
-        // new MarkerClusterer({map, markers})
+        for (const marker of markers) {
+            const contentString = 
+            `<h1> ${marker.report.name}</h1>`+
+            `<p> ${marker.report.breed.name} </p>` + 
+            `<img width=150 height=auto src=${marker.report.imageUrl}>` + 
+            `<a href="http://localhost:3000/api/v1/reports/${marker.report._id}"> See Full Report</a> `
+            const infowindow = new maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200,
+              });
+            marker.addListener("click", () => {
+                closeOtherInfo()
+                infowindow.open({
+                    anchor: marker,
+                    map,
+                    shouldFocus: false,
+                  });
+                InforObj[0] = infowindow
+            })
+        }
+
+
+        function closeOtherInfo() {
+            if (InforObj.length > 0) {
+                InforObj[0].set("marker", null);
+                InforObj[0].close();
+                InforObj.length = 0;
+            }
+        }
+        new MarkerClusterer({map, markers})
     }
 
     const handleDrawerOpen = () => {
@@ -186,6 +217,7 @@ const MapContainer = (props) => {
         return (!str || str.length === 0 );
     }
     console.log(props.user.user.lat)
+    console.log(filteredReports)
     const renderMap = () => 
             <Box sx={{ display: 'flex',}}>
                 <CssBaseline />
@@ -206,19 +238,18 @@ const MapContainer = (props) => {
                         options={{ fullscreenControl: false }}
                         onChildClick={(e) => { props.toggleReportWindow(e) }}>
                         {props.geolocating ? <MapLoadingSpinner text={"Locating"} /> : null}
-                        {props.reports ? props.reports.map((report) => <MapMarker
-                            key={report.id}
-                            id={report.id}
-                            key={report.id}
+                        {filteredReports ? filteredReports.map((report) => <MapMarker
+                            key={report._id}
+                            id={report._id}
                             lat={report.lat}
                             lng={report.lng}
                             text={report.name}
                             show={report.show}
-                            breed={report.breed}
-                            timeCreated={report.time_created}
+                            breed={report.breed.name}
+                            // timeCreated={report.time_created}
                             name={report.name} 
                             zIndex={2}
-                            style={{height: 40, width:20}}/>) : <MapLoadingSpinner text="Loading"/>}
+                            style={{height: 60, width:20}}/>) : <MapLoadingSpinner text="Loading"/>}
                     </GoogleMapReact>
                 </Main>
                 {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}
@@ -247,12 +278,12 @@ const MapContainer = (props) => {
                     <Divider />
                     <List >
                         {!isEmpty(filteredReports) ? filteredReports.map((report, index) => (
-                            <Tooltip key={report.id} title={report.created} placement='left' open={showReportListDetails} disableHoverListener disableFocusListener>
-                            <ListItem button key={report.id} onMouseEnter={()=>setShowReporListDetails(true)} onMouseLeave={()=>setShowReporListDetails(false)} onClick={()=>setShowReporListDetails(false)}>
+                            <Tooltip key={report._id} title={report.createdAt} placement='left' open={showReportListDetails} disableHoverListener disableFocusListener>
+                            <ListItem button key={report._id} onMouseEnter={()=>setShowReporListDetails(true)} onMouseLeave={()=>setShowReporListDetails(false)} onClick={()=>setShowReporListDetails(false)}>
                                 <ListItemAvatar>
-                                    <Avatar alt={report.breed} src={`dog-icons/${report.breed}.png`} variant="square" sx={{ width: [null, null, 36] }} />
+                                    <Avatar alt={report.breed.name} src={`dog-icons/${report.breed.name}.png`} variant="square" sx={{ width: [null, null, 36] }} />
                                 </ListItemAvatar>
-                                <ListItemText primary={report.breed} secondary={report.name} onClick={(e) => handleListItemClick(report.lat, report.lng)}>
+                                <ListItemText primary={report.breed.name} secondary={report.name} onClick={(e) => handleListItemClick(report.lat, report.lng)}>
 
                                 </ListItemText>
                             </ListItem>

@@ -24,7 +24,7 @@ const MapInfoWindow = (props) => {
     return (
         <div style={infoWindowStyle} id={id}>
           <div>
-            <button style={{float: 'right'}} onClick={()=> dispatch(toggleReportWindow(id))}>X</button>
+            <button style={{float: 'right'}} onClick={props.handleOpened}>X</button>
           </div>
           <div style={{ fontSize: 16 }}>
             {name}

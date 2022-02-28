@@ -11,51 +11,52 @@ const reportSchema = new mongoose.Schema(
             ref: 'Breed',
             required: [true, "Must be associated with a breed"]
         },
-        dogName: {
+        name: {
             type: String,
             required: true,
             default: "Unknown",
         },
-        dogColor: {
+        color: {
             type: String,
             required: true,
             default: "Unknown",
         },
-        dogAge: {
+        age: {
             type: Number,
             required: true,
             default: 0,
         },
-        dogGender: {
+        gender: {
             type: String,
             required: true,
             default: "Unknown",
         },
-        dogFeatures: {
+        features: {
             type: String,
             required: true,
             default: "Not Provided",
         },
-        dogDemeanor: {
+        demeanor: {
             type: String,
             required: true,
             default: "Not Provided"
         },
-        reportLat: {
+        lat: {
             type: Number,
             required: [true, "Please provide latitude"],
         },
-        reportLng: {
+        lng: {
             type: Number,
             required: [true, "Please provide longitude"],
         },
-        reportShow: {
+        show: {
             type: Boolean,
             default: false,
         },
-        image: {
-            data: Buffer,
-            contentType: String
+        imageUrl: {
+            type: String,
+            required: true,
+            default: "Not Provided",       
         }
     },
     { timestamps: true }

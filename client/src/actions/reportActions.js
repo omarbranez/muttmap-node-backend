@@ -96,34 +96,17 @@ export const reportFormImageChange = (e) => ({
     payload: {name: "photo", value: e.target.files[0]}
 })
 
-export const createReport = (reportData) => {
-    const fData = new FormData()
-    fData.append('name', reportData.name)
-    fData.append('user_id', reportData.user_id)
-    fData.append('dog_id', reportData.dog_id)
-    fData.append('color', reportData.color)
-    fData.append('gender', reportData.gender)
-    fData.append('lat', reportData.lat)
-    fData.append('lng', reportData.lng)
-    fData.append('age', reportData.age)
-    fData.append('features', reportData.features)
-    fData.append('demeanor', reportData.demeanor)
-    fData.append('photo', reportData.photo)
-    fData.append('show', false)
-
-    return dispatch => {
-        fetch(REPORTS_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': localStorage.token,
-            },
-            body: fData
-        })        
-        .then(res => res.json())
-        .then(responseJSON => dispatch({
+export const createReport = async(reportData, dispatch) => {
+    try {
+        console.log(reportData)
+        const { data } = await axios.post(`/api/v1/reports/create`, reportData)
+        const { reports } = data
+        dispatch({
             type: "ADD_REPORTS",
-            payload: responseJSON
-        }))
+            payload: reports
+        })
+    } catch(error){
+        console.log(error)
     }
 }
 

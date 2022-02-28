@@ -1,25 +1,25 @@
 import Report from "../models/Report.js"
 import Image from "../models/Image.js"
+import Breed from '../models/Breed.js'
 import fs from 'fs'
 import { StatusCodes } from "http-status-codes"
 
 import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors/index.js'
+import User from "../models/User.js"
+import { Console } from "console"
 const getAllReports = async(req, res) => {
-    const reports = await Report.find({})
+    const reports = await Report.find({}).populate('createdBy', 'username').populate('breed', 'name')
     res.status(StatusCodes.OK).json({ reports })
 }  
 
 const createNewReport = async(req, res) => {
-    console.log(req.body)
-    req.body.createdBy = req.user.userId
-
-    const img = fs.readFileSync(req.body.photo.path)
-    const encodedImg = img.toString('base64')
-    req.body.image = await Image.create({ contentType: req.photo.mimetype, image: Buffer.from(encodedImg, 'base64')})
-
+    const user = await User.findOne({id : req.body.userId} )
+    req.body.createdBy = user
+    const breed = await Breed.findOne({id: req.body.breedId})
+    req.body.breed = breed
     const report = await Report.create(req.body)
-
-    res.status(StatusCodes.CREATED).json({ report })
+    const reports = await Report.find({})
+    res.status(StatusCodes.CREATED).json({ reports, report })
 }
 
 export {getAllReports, createNewReport}

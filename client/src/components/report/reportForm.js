@@ -47,25 +47,26 @@ const ReportForm = (props) => {
     const [age, setAge] = useState(null)
     const [features, setFeatures] = useState('')
     const [demeanor, setDemeanor] = useState('')
+    const [imageUrl, setImageUrl] = useState('')
     const [photo, setPhoto] = useState(null)
     const [photoAllowed, setPhotoAllowed] = useState('')
 
     const steps = ['Location', 'Breed', 'Name', "Age", "Color/Markings", "Gender", "Features", "Demeanor", "Photo", "Submit Report"]
     const stateArray = [[lat, lng], dogId, name, age, colorInput, gender, features, demeanor, photoAllowed]
     useEffect(() => {
-        dispatch(getBreeds())
-    }, [dispatch])
+        getBreeds(dispatch)
+    }, [])
 
     useEffect(() => {
-        dispatch(setGeolocatedLocation())
-    }, [dispatch])
+        setGeolocatedLocation(dispatch)
+    }, [])
 
     const handleChecked = (e) => {
         setChecked(true)
     }
     const handleSubmit = (e) => {
         e.preventDefault()
-        props.createReport({ name, color, colorInput, gender, lat, lng, age, features, demeanor, photo, user_id: props.user.id, dog_id: dogId })
+        props.createReport({ name, color: colorInput, gender, lat: parseFloat(lat), lng: parseFloat(lng), age, features, demeanor, userId: props.user.user._id, breedId: dogId, imageUrl }, dispatch)
         navigate('/map', { replace: true })
     }
 
@@ -135,14 +136,14 @@ const ReportForm = (props) => {
     const ageOptions = Array.from({ length: 20 }, (v, k) => k + 1)
 
     const isSubmitEnabled =
-        age && colorInput && features && demeanor && gender && lat && lng && name && dogId && photo && (photoAllowed == "allow")
+        age && colorInput && features && demeanor && gender && lat && lng && name && dogId && imageUrl && (photoAllowed == "allow")
 
-    const breeds = props.breeds.map(breed => ({ value: breed.id, label: breed.breed, attribute: "dogId" }))
+    const breeds = props.breeds.map(breed => ({ value: breed._id, label: breed.name, attribute: "dogId" }))
 
-    const addPhoto = (photo) => {
-        setPhoto(photo)
+    const addPhoto = (imageUrl) => {
+        setImageUrl(imageUrl)
     }
-
+    console.log(isSubmitEnabled)
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

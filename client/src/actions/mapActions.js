@@ -16,7 +16,7 @@
 // }
 
 export const setGeolocatedLocation = async(dispatch) => {
-  dispatch({ type: "CURRENTLY_GEOLOCATING" })
+    dispatch({ type: "CURRENTLY_GEOLOCATING" })
     try {
       let {coords} = await getPosition()            
       dispatch({

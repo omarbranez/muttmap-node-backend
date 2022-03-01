@@ -6,7 +6,7 @@ import { setGeolocatedLocation, resetLocation, setMarkerLocation } from '../acti
 import { styled, useTheme } from '@mui/material/styles';
 import GoogleMapReact from 'google-map-react/'
 import { MarkerClusterer } from '@googlemaps/markerclusterer'
-import MapMarker from '../components/map/mapMarker'
+// import MapMarker from '../components/map/mapMarker'
 import MapReportButton from '../components/map/mapReportButton'
 import MapCurrentLocationButton from '../components/map/mapCurrentLocationButton'
 import MapDefaultLocationButton from '../components/map/mapDefaultLocationButton'
@@ -158,7 +158,7 @@ const MapContainer = (props) => {
             `<h1> ${marker.report.name}</h1>`+
             `<p> ${marker.report.breed.name} </p>` + 
             `<img width=150 height=auto src=${marker.report.imageUrl}>` + 
-            `<a href="http://localhost:3000/api/v1/reports/${marker.report._id}"> See Full Report</a> `
+            `<a href="http://localhost:3000/reports/${marker.report._id}"> See Full Report</a> `
             const infowindow = new maps.InfoWindow({
                 content: contentString,
                 maxWidth: 200,
@@ -238,18 +238,7 @@ const MapContainer = (props) => {
                         options={{ fullscreenControl: false }}
                         onChildClick={(e) => { props.toggleReportWindow(e) }}>
                         {props.geolocating ? <MapLoadingSpinner text={"Locating"} /> : null}
-                        {filteredReports ? filteredReports.map((report) => <MapMarker
-                            key={report._id}
-                            id={report._id}
-                            lat={report.lat}
-                            lng={report.lng}
-                            text={report.name}
-                            show={report.show}
-                            breed={report.breed.name}
-                            // timeCreated={report.time_created}
-                            name={report.name} 
-                            zIndex={2}
-                            style={{height: 60, width:20}}/>) : <MapLoadingSpinner text="Loading"/>}
+                        {!filteredReports && <MapLoadingSpinner text="Loading"/>}
                     </GoogleMapReact>
                 </Main>
                 {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}

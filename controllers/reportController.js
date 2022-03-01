@@ -18,8 +18,15 @@ const createNewReport = async(req, res) => {
     const breed = await Breed.findOne({id: req.body.breedId})
     req.body.breed = breed
     const report = await Report.create(req.body)
-    const reports = await Report.find({})
+    const reports = await Report.find({}).populate('createdBy', 'username').populate('breed', 'name')
     res.status(StatusCodes.CREATED).json({ reports, report })
 }
 
-export {getAllReports, createNewReport}
+const getOneReport = async(req, res) => {
+    console.log(req.params.id)
+    const report = await Report.findById( `${req.params.id}`).populate('createdBy', 'username').populate('breed', 'name')
+    console.log(report)
+    res.status(StatusCodes.OK).json({ report })
+}
+
+export {getAllReports, createNewReport, getOneReport}

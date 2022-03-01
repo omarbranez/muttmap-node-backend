@@ -36,44 +36,17 @@ export const getReports = async(dispatch) => {
     }
 }
 
-export const getFilteredReports = () => {
-    return dispatch => { // try watchPosition
-        navigator.geolocation.getCurrentPosition(position =>  {
-            dispatch({ type: "LOADING_MAP" })
-            dispatch({type: "SET_CENTER", payload: {
-              center: {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-            }
-        }
-    })
-    const bounds = new URLSearchParams().toString()
-    return dispatch => {
-        dispatch({ type: "LOADING_REPORTS"})
-        fetch(REPORTS_URL + '?' + bounds, {
-            header: 'Access-Control-Allow-Origin'
-        })
-        .then(res => res.json())
-        .then(responseJSON => dispatch({
-            type: "ADD_REPORTS",
-            payload: responseJSON,
-        }))
-    }
-})}}
 
-export const setSelectedReport = (id) => {
-    console.log(id)
-    return dispatch => {
-        fetch(REPORTS_URL + '/' + id, {
-            headers: {
-                'Authorization': localStorage.token,
-            }})
-        .then(res => res.json())
-        // .then(res => console.log(res.json()))
-        .then(report => dispatch({
-            type: 'SET_SELECTED_REPORT',
+export const setSelectedReport = async(id, dispatch) => {
+    try {
+        const {data} = await axios.get(`/api/v1/reports/${id}`)
+        const { report } = data
+        dispatch({
+            type: "SET_SELECTED_REPORT",
             payload: report
-        }))
+        })
+    } catch(error){
+        console.log(error)
     }
 }
 

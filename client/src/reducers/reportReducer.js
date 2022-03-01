@@ -1,7 +1,7 @@
 const nullReport = {
-    id: null,
-    user_id: null,
-    dog_id: null,
+    // id: null,
+    // user_id: null,
+    // dog_id: null,
     name: '',
     color: '',
     gender: '',
@@ -9,14 +9,15 @@ const nullReport = {
     lng: null,
     age: null,
     features: '',
-    photo: null,
-    created: '',
-    liked: false,
-    like_id: null,
-    commented: false,
-    comment_id: null,
-    reactions: [],
-    comments: []
+    imageUrl: null,
+    demeanor: ''
+    // created: '',
+    // liked: false,
+    // like_id: null,
+    // commented: false,
+    // comment_id: null,
+    // reactions: [],
+    // comments: []
 }
 
 const initialState = {
@@ -42,7 +43,9 @@ const reportReducer = (state=initialState, action) => {
                 loading: false,
             }
         case "SET_SELECTED_REPORT": 
-            return {...state, selectedReport: action.payload, liked: action.payload.liked, commented: action.payload.commented, loading: false}
+            console.log(action.payload)
+            return {...state, selectedReport: action.payload, loading: false}
+                // liked: action.payload.liked, commented: action.payload.commented, loading: false}
         case "UNSET_SELECTED_REPORT":
             return {...state, selectedReport: nullReport}
         case "REPORT_FORM_CHANGE":

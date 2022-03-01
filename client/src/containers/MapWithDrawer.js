@@ -10,6 +10,7 @@ import { MarkerClusterer } from '@googlemaps/markerclusterer'
 import MapReportButton from '../components/map/mapReportButton'
 import MapCurrentLocationButton from '../components/map/mapCurrentLocationButton'
 import MapDefaultLocationButton from '../components/map/mapDefaultLocationButton'
+import MapReportListButton from '../components/map/mapReportListButton'
 import MapLoadingSpinner from '../components/map/mapLoadingSpinner'
 import ReactDOM from 'react-dom'
 import Avatar from '@mui/material/Avatar';
@@ -69,7 +70,7 @@ const MapContainer = (props) => {
     
     const [open, setOpen] = useState(false);
     const [showReportButtonTooltip, setShowReportButtonTooltip] = useState(false)
-    const [showReportListDetails, setShowReporListDetails] = useState(false)
+    const [showReportListDetails, setShowReportListDetails] = useState(false)
     const [bounds, setBounds] = useState(null)
     const [zoom, setZoom] = useState(15)
     const [filteredReports, setFilteredReports] = useState(null)
@@ -121,16 +122,7 @@ const MapContainer = (props) => {
 
         const openListButtonDiv = document.createElement('div')
         openListButtonDiv.addEventListener('click', handleDrawerOpen)
-        ReactDOM.render(
-            <IconButton sx={{ ...(open && { display: 'none' }) }}  
-                        color="inherit"
-                        aria-label="open drawer"
-                        // edge="end"
-                        onMouseEnter={()=>setShowReportButtonTooltip(true)}
-                        onMouseLeave={()=>setShowReportButtonTooltip(false)}
-                        onClick={()=>setShowReportButtonTooltip(false)}> 
-                <img src="./report-list-icon.png" width="60"></img>  
-            </IconButton>, openListButtonDiv)
+        ReactDOM.render(<MapReportListButton/>, openListButtonDiv)
         map.controls[maps.ControlPosition.TOP_RIGHT].push(openListButtonDiv)
 
         const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -177,9 +169,9 @@ const MapContainer = (props) => {
 
         function closeOtherInfo() {
             if (InforObj.length > 0) {
-                InforObj[0].set("marker", null);
-                InforObj[0].close();
-                InforObj.length = 0;
+                InforObj[0].set("marker", null)
+                InforObj[0].close()
+                InforObj.length = 0
             }
         }
         new MarkerClusterer({map, markers})
@@ -216,8 +208,7 @@ const MapContainer = (props) => {
     function isEmpty(str) {
         return (!str || str.length === 0 );
     }
-    console.log(props.user.user.lat)
-    console.log(filteredReports)
+
     const renderMap = () => 
             <Box sx={{ display: 'flex',}}>
                 <CssBaseline />
@@ -242,6 +233,7 @@ const MapContainer = (props) => {
                     </GoogleMapReact>
                 </Main>
                 {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}
+                {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}
                 <Drawer
                     sx={{
                         width: drawerWidth,
@@ -256,19 +248,19 @@ const MapContainer = (props) => {
 
                 > 
                     <DrawerHeader>
-                    {/* <ClickAwayListener onClickAway={handleDrawerClose}> */}
-                    <Tooltip title='Click here to see a list of reports!' placement='left-start' open={showReportButtonTooltip} disableHoverListener disableFocusListener>
+                    
+                    {/* <Tooltip title='Click here to see a list of reports!' placement='left-start' open={showReportButtonTooltip} disableHoverListener disableFocusListener> */}
                         <IconButton onClick={handleDrawerClose}>
                             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
-                        </Tooltip>
-                        {/* </ClickAwayListener> */}
+                        {/* </Tooltip> */}
+                        
                     </DrawerHeader>
                     <Divider />
                     <List >
                         {!isEmpty(filteredReports) ? filteredReports.map((report, index) => (
-                            <Tooltip key={report._id} title={report.createdAt} placement='left' open={showReportListDetails} disableHoverListener disableFocusListener>
-                            <ListItem button key={report._id} onMouseEnter={()=>setShowReporListDetails(true)} onMouseLeave={()=>setShowReporListDetails(false)} onClick={()=>setShowReporListDetails(false)}>
+                            <Tooltip key={report._id} title={report.createdAt} placement='left' open={showReportListDetails} disableFocusListener={true}>
+                            <ListItem button key={report._id} onMouseEnter={()=>setShowReportListDetails(true)} onMouseLeave={()=>setShowReportListDetails(false)} onClick={()=>setShowReportListDetails(false)}>
                                 <ListItemAvatar>
                                     <Avatar alt={report.breed.name} src={`dog-icons/${report.breed.name}.png`} variant="square" sx={{ width: [null, null, 36] }} />
                                 </ListItemAvatar>
@@ -282,6 +274,7 @@ const MapContainer = (props) => {
                             </ListItem>}
                     </List>
                 </Drawer>
+                {/* </ClickAwayListener> */}
             </Box>
     
   return props.loading === false && props.currentLocation ? !props.geolocating ? renderMap() : <MapLoadingSpinner text={"Locating"}/> : <MapLoadingSpinner text={"Loading"}/>

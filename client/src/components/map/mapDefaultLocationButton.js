@@ -15,7 +15,7 @@ const MapDefaultLocationButton = (props) => {
     
     return (
         <div>
-            <Tooltip title='Click here to return to your home location!' placement='top-start' open={open} disableHoverListener disableFocusListener>
+            <Tooltip title='Click here to return to your home location!' placement='top-start'   disableFocusListener={true}>
                 <Button onMouseEnter={()=>setOpen(true)} onMouseLeave={()=>setOpen(false)} onClick={handleClick}/>
             </Tooltip>
         </div>

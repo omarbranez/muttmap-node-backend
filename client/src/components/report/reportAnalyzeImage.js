@@ -13,18 +13,19 @@ const ReportAnalyzeImage = ({ breeds, addPhoto, allowPhoto }) => {
     const [attachment, setAttachment] = useState(null)
     const [uploading, setUploading] = useState(false)
 
-    const handleQuery = async() => {
+    const handleQuery = async(url) => {
         setProcessing(true)
         setAnalysis(null)
         
-        computerVision(attachment || null).then((item) => {
-            console.log(attachment)
+        console.log(url)
+        computerVision(url || null).then((item) => {
             const breedNameArray = breeds.map( breed => breed.name.toLowerCase() )
             const breedMatch = item.tags.filter(tag => breedNameArray.includes(tag.name.toLowerCase()))
             
             // if "hound", "terrier", etc, they will match with "hound mix", "terrier mix" etc
             // otherwise Unknown Mix
             setAnalysis(item)
+            console.log(item)
             if (!item.tags.find(tag => tag.name == 'dog') || item.adult.isAdultContent || item.adult.isGoryContent || item.adult.isRacyContent ) {
                 allowPhoto("disallow")
             } else {
@@ -32,7 +33,8 @@ const ReportAnalyzeImage = ({ breeds, addPhoto, allowPhoto }) => {
                 if ( breedMatch ) {
                     setPossibleBreed(breedMatch[0].name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
                 }
-                addPhoto(attachment)
+                setAttachment(url)
+                addPhoto(url)
             }
             setProcessing(false)
         })
@@ -48,9 +50,11 @@ const ReportAnalyzeImage = ({ breeds, addPhoto, allowPhoto }) => {
             </div>
         )
     }
-
   const handleAttachPhotos = async(event) => {
     event.preventDefault()
+    addPhoto('')
+    setAttachment('')
+    setPossibleBreed(null)
     setUploading(true)
     const formData = new FormData()
     const instance = axios.create() 
@@ -59,10 +63,15 @@ const ReportAnalyzeImage = ({ breeds, addPhoto, allowPhoto }) => {
       formData.append("upload_preset", "tczwz9ns")
       formData.append("public_id", `${file.name.slice(0, -4)}`)
       formData.append("cloud_name", `${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`);
-      const res = await instance.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, formData)
-      .then(res => setAttachment(res.data.url) )
-      .then(setUploading(false))
-      .then(handleQuery(attachment))
+      try {
+        let res = await instance.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, formData)
+        handleQuery(res.data.url)
+      }
+      catch(error) {
+        console.log(error)
+      } finally {
+        setUploading(false)
+      }
   }
     const Input = styled('input')({
         display: 'none',

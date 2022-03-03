@@ -13,6 +13,7 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import { Select as MuiSelect } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
@@ -62,34 +63,22 @@ const ReportForm = (props) => {
         setGeolocatedLocation(dispatch)
     }, [])
 
-    const handleChecked = (e) => {
-        setChecked(true)
-    }
     const handleSubmit = (e) => {
         e.preventDefault()
         props.createReport({ name, color: colorInput, gender, lat: parseFloat(lat), lng: parseFloat(lng), age, features, demeanor, userId: props.user.user._id, breedId: dogId, imageUrl }, dispatch)
         navigate('/map', { replace: true })
     }
 
-    function triggerInput(input, enteredValue) { // should be a blog post. REACT HATES THIS
-        const lastValue = input.value
-        input.value = enteredValue
-        const event = new Event("input", { bubbles: true })
-        const tracker = input._valueTracker
-        if (tracker) {
-            tracker.setValue(lastValue)
-        }
-        input.dispatchEvent(event)
-    }
-
-    const handleCurrentLocationClick = () => {
-        triggerInput(document.getElementById("lat-field"), props.currentLocation.lat)
-        triggerInput(document.getElementById("lng-field"), props.currentLocation.lng)
+    const handleCurrentLocationClick = async() => {
+        setGeolocatedLocation(dispatch)
+        setLat(props.currentLocation.lat)
+        setLng(props.currentLocation.lng)
+        handleNext()
     }
 
     const sendMapToForm = ({ lat, lng }) => {
-        triggerInput(document.getElementById("lat-field"), lat)
-        triggerInput(document.getElementById("lng-field"), lng)
+        setLat(lat)
+        setLng(lng)
     }
 
     const confirmClicked = () => {
@@ -147,8 +136,14 @@ const ReportForm = (props) => {
     }
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ width: '100%', mt: 10 }}>
+
+  
+            {/* <Grid item md={6} sx={{ borderBottom: 1, borderColor: 'divider'}}>
+                {(lat && lng) && <p>Location:<span>{lat}, {lng}</span></p>}
+                <p>HELLO</p>
+            </Grid> */}
+            {/* <Grid item md={6} sx={{  borderBottom: 1, borderColor: 'divider' }}> */}
 
                 <img src={MuttmapNewReport} width="500"></img>
                 <h2 style={{ color: 'red' }}>All Fields Are Required</h2>
@@ -168,14 +163,24 @@ const ReportForm = (props) => {
                             )
                         })}
                     </Stepper>
+            <Grid container sx={{mt: 5}}>
+                <Grid item md={4} sx={{ borderBottom: 1, borderColor: 'divider'}}>
+                {(lat && lng) && <p>Location: {lat}, {lng}</p>}
+                {breed && <p>Breed: {breed}</p>}
+                {name && <p>Name: {name}</p>}
+                {age && <p>Age: {age}</p>}
+                {color && <p>Color: {colorInput}</p>}
+                {gender && <p>Gender: {gender}</p>}
+                {features && <p>Features: {features}</p>}
+                {demeanor && <p>Demeanor: {demeanor}</p>}
+                {imageUrl && <p>Photo?: Yes</p>}
+                {/* <p>HELLO</p> */}
+            </Grid>
+                                    <Grid item md={7} sx={{  borderBottom: 1, borderColor: 'divider' }}>
                     {activeStep === 0 && (
                         <div>
                             <label>Location</label>
                             <br />
-                            <TextField
-                                id="lat-field" disabled type="text" name="lat" onChange={(e) => setLat(e.target.value)} value={lat} />
-                            <TextField
-                                id="lng-field" disabled type="text" name="lng" onChange={(e) => setLng(e.target.value)} value={lng} />
                             <br />
                             <input type="button" disabled={showMap} onClick={handleCurrentLocationClick} value="Use Current Location" />
                             <br />
@@ -204,7 +209,7 @@ const ReportForm = (props) => {
 
                     {activeStep === 3 && (
                         <div>
-                            <FormControl margin='dense' sx={{ m: 1, minWidth: 100 }}>
+                            <FormControl margin='dense' sx={{ m: 1, minWidth: 150 }}>
                                 <InputLabel>Dog's Age</InputLabel>
                                 <MuiSelect value={age} onChange={(e) => setAge(e.target.value)} label="Dog's Age">
                                     {ageOptions.map(ageOption => <MenuItem value={ageOption}>{ageOption}</MenuItem>)}
@@ -265,22 +270,7 @@ const ReportForm = (props) => {
                     )}
                     {activeStep === 9 && (
                         <div>
-                            {!isSubmitEnabled && <strong style={{ color: "red" }}>Please complete all fields</strong>}
-                            <br />
-                            <FormControlLabel
-                                label="Location"
-                                control={<Checkbox checked={checked[0]} />}
-                            />
-                            <br />
-                            <FormControlLabel
-                                label="Breed"
-                                control={<Checkbox checked={checked[1]} />}
-                            />
-                            <FormControlLabel
-                                label="Name"
-                                control={<Checkbox checked={checked[2]} />}
-                            />
-                            <p></p>
+                            <p>{isSubmitEnabled ? "Would you like to let the world know about this dog?" : "Please complete all fields before submitting"}</p>
                             <input type="submit" value="Submit New Report" disabled={!isSubmitEnabled} />
                         </div>
                     )}
@@ -297,9 +287,10 @@ const ReportForm = (props) => {
                         {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                     </Button>
                             </div>
+            </Grid>
+            </Grid>
                 </form>
             </Box>
-        </Box>
     )
 }
 
@@ -312,4 +303,4 @@ const mapStateToProps = (state) => ({
     user: state.user
 })
 
-export default connect(mapStateToProps, { createReport, getBreeds, reportFormChange, reportFormSelectChange, reportFormImageChange })(ReportForm)
+export default connect(mapStateToProps, { createReport, getBreeds, reportFormChange, reportFormSelectChange, reportFormImageChange, setGeolocatedLocation })(ReportForm)

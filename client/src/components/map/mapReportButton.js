@@ -14,7 +14,7 @@ const MapReportButton = (props) => {
     }
     
     return (
-        <div>
+        <div style={{cursor: "pointer"}}>
             <Tooltip title='Click here to report a new dog sighting!' placement='top-start' open={open} disableHoverListener disableFocusListener={true}>
                 <Button onMouseEnter={()=>setOpen(true)} onMouseLeave={()=>setOpen(false)} onClick={handleClick} />
             </Tooltip>

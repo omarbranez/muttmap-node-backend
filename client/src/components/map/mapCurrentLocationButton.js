@@ -14,7 +14,7 @@ const MapCurrentLocationButton = (props) => {
     }
     // changing tooltip options OR back button disables autologin ?
     return (
-        <div>
+        <div style={{cursor: "pointer"}}>
             <Tooltip title='Click here to find your current location!' placement='top-start' open={open} disableFocusListener={true}>
                 <Button onMouseEnter={()=>setOpen(true)} onMouseLeave={()=>setOpen(false)} onClick={handleClick}/>
             </Tooltip>

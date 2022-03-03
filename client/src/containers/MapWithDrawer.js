@@ -69,7 +69,6 @@ const MapContainer = (props) => {
     const theme = useTheme();
     
     const [open, setOpen] = useState(false);
-    const [showReportButtonTooltip, setShowReportButtonTooltip] = useState(false)
     const [showReportListDetails, setShowReportListDetails] = useState(false)
     const [bounds, setBounds] = useState(null)
     const [zoom, setZoom] = useState(15)

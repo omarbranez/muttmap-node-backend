@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import GoogleMapReact from 'google-map-react'
 import ReportMapMarker from './reportMapMarker'
+import Button from '@mui/material/Button'
 
 const ReportFormMap = (props) => {
     const [ coordinates, setCoordinates ] = useState(null)
@@ -19,7 +20,7 @@ const ReportFormMap = (props) => {
     }
 
     return(
-        <div style={{ height: '300px', width: '500px' }}>
+        <div style={{ height: '300px', width: '500px', marginLeft: "auto", marginRight: "auto" }}>
             {(props.mapLoading === false) ?
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: `${process.env.REACT_APP_B_API_KEY}` }}
@@ -31,7 +32,8 @@ const ReportFormMap = (props) => {
                 {coordinates && <ReportMapMarker lat={coordinates.lat} lng={coordinates.lng}/>}
                 </GoogleMapReact>
             : <h2>Loading</h2>}
-            {showConfirmButton ? <input type="button" value="Confirm Location" onClick={handleConfirmClick}/> : null }
+            {showConfirmButton && <Button style={{marginBottom: "3vh"}} onClick={handleConfirmClick}>Confirm Location</Button>}
+            {/* <input type="button" value="Confirm Location" onClick={handleConfirmClick}/> : null } */}
         </div>
     )
 }

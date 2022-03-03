@@ -24,6 +24,7 @@ import Checkbox from '@mui/material/Checkbox'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import PropTypes from 'prop-types'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import MapLoadingSpinner from '../map/mapLoadingSpinner'
 
 
 const ReportForm = (props) => {
@@ -93,6 +94,7 @@ const ReportForm = (props) => {
 
     const confirmClicked = () => {
         setShowMap(!showMap)
+        handleNext()
     }
 
     const allowPhoto = (verdict) => {
@@ -143,7 +145,7 @@ const ReportForm = (props) => {
     const addPhoto = (imageUrl) => {
         setImageUrl(imageUrl)
     }
-    console.log(isSubmitEnabled)
+
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -183,7 +185,7 @@ const ReportForm = (props) => {
                     )}
 
                     <div >
-                        {showMap && !props.geolocating ? <ReportFormMap mapCoordinates={props.currentLocation} mapLoading={props.geolocating} sendMapToForm={sendMapToForm} confirmClicked={confirmClicked} /> : null}
+                        {showMap ? !props.geolocating ? <ReportFormMap mapCoordinates={props.currentLocation} mapLoading={props.geolocating} sendMapToForm={sendMapToForm} confirmClicked={confirmClicked} /> : <MapLoadingSpinner text="Locating"/> : null}
                     </div>
                     {activeStep === 1 && (
                         <div>
@@ -282,16 +284,19 @@ const ReportForm = (props) => {
                             <input type="submit" value="Submit New Report" disabled={!isSubmitEnabled} />
                         </div>
                     )}
+                    <div style={{marginTop: "3vh"}}>
+
                     <Button
                         disabled={activeStep === 0}
                         onClick={handleBack}
-                        sx={{ mr: 1 }}
-                    >Back
+                        >Back
                     </Button>
                     <Button onClick={handleNext}
-                        disabled={!stateArray[activeStep] || !lat}>
+                        disabled={!stateArray[activeStep] || !lat}
+                        >
                         {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                     </Button>
+                            </div>
                 </form>
             </Box>
         </Box>

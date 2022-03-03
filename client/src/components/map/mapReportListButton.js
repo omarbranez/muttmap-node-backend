@@ -12,7 +12,7 @@ const MapReportListButton = () => {
     }
     
     return (
-        <div style={{marginTop: "5vh"}}>
+        <div style={{marginTop: "5vh", cursor: "pointer"}}>
             <Tooltip title='Click here to see a list of reports!' placement='top-start' >
                 <Button onMouseEnter={()=>setOpen(true)} onMouseLeave={()=>setOpen(false)} onClick={handleClick}/>
             </Tooltip>

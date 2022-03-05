@@ -42,7 +42,7 @@ const AuthForm = ({ authUser, user }) => {
     useEffect(() => {
         if (user) {
             setTimeout(() => {
-                navigate('/')
+                navigate('/map')
             }, 3000)
         }
     }, [user, navigate])

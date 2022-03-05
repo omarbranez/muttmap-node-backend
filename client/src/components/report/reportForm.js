@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Select from 'react-select'
@@ -29,7 +29,6 @@ const ReportForm = (props) => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const repForm = useRef(null)
 
     const [activeStep, setActiveStep] = useState(0)
 
@@ -119,13 +118,12 @@ const ReportForm = (props) => {
     const addPhoto = (imageUrl) => {
         setImageUrl(imageUrl)
     }
-    console.log(!!stateArray[activeStep])
-    console.log(activeStep)
+
     return (
         <Box sx={{ width: '100%', mt: 10 }}>
             <img src={MuttmapNewReport} width="500"></img>
             {/* <h2 style={{ color: 'red' }}>All Fields Are Required</h2> */}
-            <form onSubmit={handleSubmit} ref={repForm}>
+            <form onSubmit={handleSubmit}>
                 <Stepper nonLinear activeStep={activeStep}>
                     {steps.map((label, index) => {
                         return (
